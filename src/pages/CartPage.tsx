@@ -72,12 +72,11 @@ const CartPage = () => {
               <span className="font-display text-lg text-foreground">Total</span>
               <span className="font-display text-3xl font-bold text-primary">R$ {total.toFixed(2).replace(".", ",")}</span>
             </div>
-            <button className="w-full py-3 bg-accent text-accent-foreground font-display font-bold text-lg rounded-lg box-glow-green hover:shadow-lg transition-all">
-              Finalizar Compra 🚀
-            </button>
-            <p className="font-pixel text-[8px] text-muted-foreground text-center mt-3">
-              * Integração de pagamento em breve
-            </p>
+            <Link to="/checkout">
+              <button className="w-full py-3 bg-accent text-accent-foreground font-display font-bold text-lg rounded-lg box-glow-green hover:shadow-lg transition-all">
+                Finalizar Compra 🚀
+              </button>
+            </Link>
           </div>
         </div>
       </div>
