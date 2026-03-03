@@ -6,6 +6,7 @@ import Reviews from "@/components/Reviews";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import StarField from "@/components/StarField";
+import NeonDivider from "@/components/NeonDivider";
 
 const Index = () => {
   return (
@@ -13,6 +14,7 @@ const Index = () => {
       <StarField />
       <Navbar />
       <HeroSection />
+      <NeonDivider />
       <FeaturedProducts />
       <HowItWorks />
       <Reviews />

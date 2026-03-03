@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Rocket, Sparkles } from "lucide-react";
-import logo from "@/assets/logo.png";
+import NeonPortal from "@/components/NeonPortal";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const HeroSection = () => {
@@ -21,13 +21,7 @@ const HeroSection = () => {
           transition={{ duration: 0.8 }}
           className="flex flex-col items-center"
         >
-          <motion.img
-            src={logo}
-            alt="Guss Print Maker"
-            className="w-40 h-40 md:w-56 md:h-56 mb-6 drop-shadow-2xl"
-            animate={{ y: [0, -15, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          />
+          <NeonPortal />
 
           <h1 className="font-pixel text-2xl md:text-4xl text-foreground mb-2 text-glow-cyan tracking-wider">
             GUSS PRINT MAKER
