@@ -7,7 +7,7 @@ const NeonDivider = () => {
   }));
 
   return (
-    <div className="relative z-10 h-16 flex items-center justify-center overflow-hidden">
+    <div className="relative z-10 h-0 flex items-center justify-center overflow-visible -my-px">
       {/* Base glow spread */}
       <div className="absolute w-full h-8 bg-gradient-to-r from-transparent via-primary/10 to-transparent blur-xl" />
 
