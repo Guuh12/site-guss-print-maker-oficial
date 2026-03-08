@@ -36,23 +36,23 @@ const HeroSection = () => {
             Impressão 3D Geek com Criatividade Sem Limites 🚀
           </motion.p>
 
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link to="/produtos">
+          <div className="flex flex-col sm:flex-row gap-4 items-center w-full">
+            <Link to="/produtos" className="w-full sm:w-auto">
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0 0 30px hsl(140 100% 50% / 0.4)" }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-accent text-accent-foreground font-display font-bold text-lg rounded-lg box-glow-green flex items-center gap-2"
+                className="w-full px-8 py-4 bg-accent text-accent-foreground font-display font-bold text-lg rounded-lg box-glow-green flex items-center justify-center gap-2"
               >
                 <Rocket className="w-5 h-5" />
                 Explorar Produtos
               </motion.button>
             </Link>
 
-            <Link to="/projeto-personalizado">
+            <Link to="/projeto-personalizado" className="w-full sm:w-auto">
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0 0 30px hsl(270 80% 60% / 0.4)" }}
                 whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 bg-secondary text-secondary-foreground font-display font-bold text-lg rounded-lg box-glow-purple flex items-center gap-2"
+                className="w-full px-8 py-4 bg-secondary text-secondary-foreground font-display font-bold text-lg rounded-lg box-glow-purple flex items-center justify-center gap-2"
               >
                 <Sparkles className="w-5 h-5" />
                 Projeto Personalizado
