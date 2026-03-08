@@ -30,6 +30,10 @@ export const products: Product[] = [
     name: "Suporte Controle Gamer",
     price: 89.90,
     image: productControllerStand,
+    media: [
+      { type: "image", url: productHeadsetStand },
+      { type: "image", url: productGeekFigure },
+    ],
     category: "Gamer",
     description: "Suporte iluminado para controle de videogame. Design futurista com acabamento premium.",
     material: "PLA+",
@@ -54,6 +58,11 @@ export const products: Product[] = [
     name: "Luminária Espacial",
     price: 199.90,
     image: productSpaceLamp,
+    media: [
+      { type: "image", url: productPixelPlaque },
+      { type: "image", url: productKeychains },
+      { type: "video", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
+    ],
     category: "Espacial",
     description: "Luminária em formato de foguete com iluminação LED integrada. Perfeita para decoração geek.",
     material: "PLA+ / LED",
