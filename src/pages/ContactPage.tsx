@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 import { Send, MessageCircle, Instagram, Mail } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -9,10 +10,31 @@ import { toast } from "sonner";
 const ContactPage = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Mensagem enviada com sucesso! 🦆");
-    setFormData({ name: "", email: "", message: "" });
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("notify-contact", {
+        body: {
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        },
+      });
+
+      if (error) throw error;
+
+      toast.success("Mensagem enviada com sucesso! 🦆");
+      setFormData({ name: "", email: "", message: "" });
+    } catch (err: any) {
+      console.error(err);
+      toast.error("Erro ao enviar mensagem. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const contacts = [
@@ -59,11 +81,12 @@ const ContactPage = () => {
                 />
                 <motion.button
                   type="submit"
+                  disabled={loading}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-full py-3 bg-primary text-primary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-primary text-primary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  <Send className="w-4 h-4" /> Enviar Mensagem
+                  <Send className="w-4 h-4" /> {loading ? "Enviando..." : "Enviar Mensagem"}
                 </motion.button>
               </form>
             </div>
