@@ -58,6 +58,11 @@ export const products: Product[] = [
     name: "Luminária Espacial",
     price: 199.90,
     image: productSpaceLamp,
+    media: [
+      { type: "image", url: productPixelPlaque },
+      { type: "image", url: productKeychains },
+      { type: "video", url: "https://www.w3schools.com/html/mov_bbb.mp4" },
+    ],
     category: "Espacial",
     description: "Luminária em formato de foguete com iluminação LED integrada. Perfeita para decoração geek.",
     material: "PLA+ / LED",
