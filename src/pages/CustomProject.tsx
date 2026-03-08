@@ -7,7 +7,7 @@ import StarField from "@/components/StarField";
 import { toast } from "sonner";
 
 const CustomProject = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", description: "", material: "PLA", color: "Preto" });
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", description: "" });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,6 +50,17 @@ const CustomProject = () => {
               </div>
 
               <div>
+                <label className="font-display font-bold text-foreground text-sm mb-1 block">Telefone <span className="text-muted-foreground font-normal">(opcional)</span></label>
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-card border border-border rounded-lg font-body text-foreground focus:outline-none focus:border-primary"
+                  placeholder="(00) 00000-0000"
+                />
+              </div>
+
+              <div>
                 <label className="font-display font-bold text-foreground text-sm mb-1 block">Descrição do Projeto</label>
                 <textarea
                   required
@@ -59,33 +70,6 @@ const CustomProject = () => {
                   className="w-full px-4 py-2.5 bg-card border border-border rounded-lg font-body text-foreground focus:outline-none focus:border-primary resize-none"
                   placeholder="Descreva o que você deseja imprimir..."
                 />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="font-display font-bold text-foreground text-sm mb-1 block">Material</label>
-                  <select
-                    value={formData.material}
-                    onChange={(e) => setFormData({ ...formData, material: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-card border border-border rounded-lg font-body text-foreground focus:outline-none focus:border-primary"
-                  >
-                    {["PLA", "PLA+", "ABS", "PETG", "Resina"].map((m) => (
-                      <option key={m} value={m}>{m}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="font-display font-bold text-foreground text-sm mb-1 block">Cor</label>
-                  <select
-                    value={formData.color}
-                    onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                    className="w-full px-4 py-2.5 bg-card border border-border rounded-lg font-body text-foreground focus:outline-none focus:border-primary"
-                  >
-                    {["Preto", "Branco", "Vermelho", "Azul", "Verde", "Amarelo", "Rosa", "Multicolorido"].map((c) => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                </div>
               </div>
 
               <div className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-primary transition-colors cursor-pointer">
