@@ -42,9 +42,12 @@ const ProductDetail = () => {
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
-              className="rounded-xl overflow-hidden border border-border"
             >
-              <img src={product.image} alt={product.name} className="w-full aspect-square object-cover" />
+              <ProductGallery
+                mainImage={product.image}
+                media={product.media}
+                productName={product.name}
+              />
             </motion.div>
 
             <motion.div
