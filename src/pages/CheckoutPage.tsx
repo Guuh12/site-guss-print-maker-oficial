@@ -62,7 +62,7 @@ const CheckoutPage = () => {
       <div className="min-h-screen bg-background">
         <StarField />
         <Navbar />
-        <div className="pt-24 flex flex-col items-center justify-center min-h-[70vh] relative z-10">
+        <div className="pt-24 pb-16 flex flex-col items-center justify-center min-h-[70vh] relative z-10">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-24 h-24 rounded-full bg-accent/20 border-4 border-accent flex items-center justify-center mb-6">
             <Check className="w-12 h-12 text-accent" />
           </motion.div>
