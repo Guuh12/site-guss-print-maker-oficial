@@ -81,11 +81,12 @@ const ContactPage = () => {
                 />
                 <motion.button
                   type="submit"
+                  disabled={loading}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-full py-3 bg-primary text-primary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-primary text-primary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  <Send className="w-4 h-4" /> Enviar Mensagem
+                  <Send className="w-4 h-4" /> {loading ? "Enviando..." : "Enviar Mensagem"}
                 </motion.button>
               </form>
             </div>
