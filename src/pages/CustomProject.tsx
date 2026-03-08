@@ -73,6 +73,18 @@ const CustomProject = () => {
 
       if (error) throw error;
 
+      // Send email notification
+      supabase.functions.invoke("notify-project-request", {
+        body: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone || null,
+          description: formData.description,
+          file_url: fileUrl,
+          file_name: fileName,
+        },
+      }).catch((err) => console.error("Email notification failed:", err));
+
       toast.success("Orçamento solicitado com sucesso! Entraremos em contato em breve. 🦆");
       setFormData({ name: "", email: "", phone: "", description: "" });
       setFile(null);
