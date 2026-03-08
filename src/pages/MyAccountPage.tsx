@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import StarField from "@/components/StarField";
 import OrderDetailCard from "@/components/OrderDetailCard";
+import AddressManager from "@/components/AddressManager";
 
 interface Order {
   id: string;
@@ -76,6 +77,11 @@ const MyAccountPage = () => {
               <LogOut className="w-4 h-4" /> Sair
             </button>
           </motion.div>
+
+          {/* Addresses */}
+          <div className="mb-10">
+            <AddressManager />
+          </div>
 
           {/* Orders */}
           <h2 className="font-pixel text-sm text-primary text-glow-cyan mb-4">📦 MEUS PEDIDOS</h2>
