@@ -10,10 +10,31 @@ import { toast } from "sonner";
 const ContactPage = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Mensagem enviada com sucesso! 🦆");
-    setFormData({ name: "", email: "", message: "" });
+    setLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke("notify-contact", {
+        body: {
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        },
+      });
+
+      if (error) throw error;
+
+      toast.success("Mensagem enviada com sucesso! 🦆");
+      setFormData({ name: "", email: "", message: "" });
+    } catch (err: any) {
+      console.error(err);
+      toast.error("Erro ao enviar mensagem. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const contacts = [
