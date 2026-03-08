@@ -36,7 +36,7 @@ const HeroSection = () => {
             Impressão 3D Geek com Criatividade Sem Limites 🚀
           </motion.p>
 
-          <div className="flex flex-col sm:flex-row gap-4 items-center w-full">
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
             <Link to="/produtos" className="w-full sm:w-auto">
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0 0 30px hsl(140 100% 50% / 0.4)" }}
