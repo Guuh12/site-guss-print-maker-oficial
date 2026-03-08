@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import StarField from "@/components/StarField";
 import OrderDetailCard from "@/components/OrderDetailCard";
+import AddressManager from "@/components/AddressManager";
 
 interface Order {
   id: string;
