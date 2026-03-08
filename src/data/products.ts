@@ -30,6 +30,10 @@ export const products: Product[] = [
     name: "Suporte Controle Gamer",
     price: 89.90,
     image: productControllerStand,
+    media: [
+      { type: "image", url: productHeadsetStand },
+      { type: "image", url: productGeekFigure },
+    ],
     category: "Gamer",
     description: "Suporte iluminado para controle de videogame. Design futurista com acabamento premium.",
     material: "PLA+",
