@@ -68,9 +68,9 @@ const CheckoutPage = () => {
           </motion.div>
           <h1 className="font-pixel text-sm text-accent text-glow-green mb-2">PEDIDO CONFIRMADO!</h1>
           <p className="font-body text-muted-foreground mb-6">Seu pedido foi registrado com sucesso.</p>
-          <div className="flex gap-4">
-            <button onClick={() => navigate("/minha-conta")} className="px-6 py-3 bg-primary text-primary-foreground font-display font-bold rounded-lg">Meus Pedidos</button>
-            <button onClick={() => navigate("/produtos")} className="px-6 py-3 bg-muted text-foreground font-display font-bold rounded-lg border border-border">Continuar Comprando</button>
+          <div className="flex flex-col sm:flex-row gap-4 px-6 w-full max-w-md">
+            <button onClick={() => navigate("/minha-conta")} className="flex-1 px-6 py-3 bg-primary text-primary-foreground font-display font-bold rounded-lg text-center">Meus Pedidos</button>
+            <button onClick={() => navigate("/produtos")} className="flex-1 px-6 py-3 bg-muted text-foreground font-display font-bold rounded-lg border border-border text-center">Continuar Comprando</button>
           </div>
         </div>
         <Footer />
