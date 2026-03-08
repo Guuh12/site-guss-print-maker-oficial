@@ -5,11 +5,17 @@ import productHeadsetStand from "@/assets/product-headset-stand.jpg";
 import productKeychains from "@/assets/product-keychains.jpg";
 import productPixelPlaque from "@/assets/product-pixel-plaque.jpg";
 
+export interface ProductMedia {
+  type: "image" | "video";
+  url: string;
+}
+
 export interface Product {
   id: string;
   name: string;
   price: number;
   image: string;
+  media?: ProductMedia[];
   category: string;
   description: string;
   material: string;
