@@ -4,6 +4,7 @@ import { ShoppingCart, ArrowLeft, Package, Palette, Ruler, Clock } from "lucide-
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import StarField from "@/components/StarField";
+import ProductGallery from "@/components/ProductGallery";
 import { products } from "@/data/products";
 import { useCart } from "@/contexts/CartContext";
 
