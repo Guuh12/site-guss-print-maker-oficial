@@ -78,6 +78,11 @@ const MyAccountPage = () => {
             </button>
           </motion.div>
 
+          {/* Addresses */}
+          <div className="mb-10">
+            <AddressManager />
+          </div>
+
           {/* Orders */}
           <h2 className="font-pixel text-sm text-primary text-glow-cyan mb-4">📦 MEUS PEDIDOS</h2>
           {loading ? (
