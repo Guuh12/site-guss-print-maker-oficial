@@ -124,7 +124,15 @@ const CustomProject = () => {
                 <input
                   type="tel"
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) => {
+                    const raw = e.target.value.replace(/\D/g, "").slice(0, 11);
+                    let formatted = raw;
+                    if (raw.length > 6) formatted = `(${raw.slice(0,2)}) ${raw.slice(2,7)}-${raw.slice(7)}`;
+                    else if (raw.length > 2) formatted = `(${raw.slice(0,2)}) ${raw.slice(2)}`;
+                    else if (raw.length > 0) formatted = `(${raw}`;
+                    setFormData({ ...formData, phone: formatted });
+                  }}
+                  maxLength={15}
                   className="w-full px-4 py-2.5 bg-card border border-border rounded-lg font-body text-foreground focus:outline-none focus:border-primary"
                   placeholder="(00) 00000-0000"
                 />
