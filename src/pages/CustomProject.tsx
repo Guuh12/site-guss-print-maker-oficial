@@ -7,7 +7,7 @@ import StarField from "@/components/StarField";
 import { toast } from "sonner";
 
 const CustomProject = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", description: "", material: "PLA", color: "Preto" });
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", description: "" });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
