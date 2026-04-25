@@ -7,6 +7,8 @@ import StarField from "@/components/StarField";
 import ProductGallery from "@/components/ProductGallery";
 import { products } from "@/data/products";
 import { useCart } from "@/contexts/CartContext";
+import PersonalizedContactDialog from "@/components/PersonalizedContactDialog";
+import ProductOptionsDialog from "@/components/ProductOptionsDialog";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -74,14 +76,49 @@ const ProductDetail = () => {
               </div>
 
               <div className="flex gap-3 mt-8">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => addItem({ id: product.id, name: product.name, price: product.price, image: product.image })}
-                  className="flex-1 py-3 bg-primary text-primary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2"
-                >
-                  <ShoppingCart className="w-5 h-5" /> Adicionar ao Carrinho
-                </motion.button>
+                {product.category === "Personalizados" ? (
+                  <PersonalizedContactDialog
+                    productId={product.id}
+                    productName={product.name}
+                    triggerLabel="Entre em contato"
+                    triggerClassName="flex-1 py-3 bg-secondary text-secondary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2"
+                  />
+                ) : product.purchaseOptions ? (
+                  <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() =>
+                        addItem({
+                          id: product.id,
+                          name: `${product.name} (${product.purchaseOptions?.defaultSelectionLabel || "padrao"})`,
+                          price: product.price,
+                          image: product.image,
+                        })
+                      }
+                      className="py-3 bg-primary text-primary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2"
+                    >
+                      <ShoppingCart className="w-5 h-5" /> Adicionar ({product.purchaseOptions.defaultSelectionLabel || "padrao"})
+                    </motion.button>
+                    <ProductOptionsDialog
+                      productId={product.id}
+                      productName={product.name}
+                      productPrice={product.price}
+                      productImage={product.image}
+                      purchaseOptions={product.purchaseOptions}
+                      triggerClassName="py-3 bg-muted text-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 border border-border hover:bg-border transition-colors"
+                    />
+                  </div>
+                ) : (
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => addItem({ id: product.id, name: product.name, price: product.price, image: product.image })}
+                    className="flex-1 py-3 bg-primary text-primary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2"
+                  >
+                    <ShoppingCart className="w-5 h-5" /> Adicionar ao Carrinho
+                  </motion.button>
+                )}
               </div>
             </motion.div>
           </div>

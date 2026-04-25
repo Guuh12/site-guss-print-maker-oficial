@@ -4,6 +4,8 @@ import { useCart } from "@/contexts/CartContext";
 import { products } from "@/data/products";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import PersonalizedContactDialog from "@/components/PersonalizedContactDialog";
+import ProductOptionsDialog from "@/components/ProductOptionsDialog";
 
 const ProductCard = ({ product }: { product: typeof products[0] }) => {
   const { addItem } = useCart();
@@ -43,15 +45,50 @@ const ProductCard = ({ product }: { product: typeof products[0] }) => {
         </p>
 
         <div className="relative">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleAdd}
-            className="mt-3 w-full py-2.5 bg-primary text-primary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-primary/30"
-          >
-            <ShoppingCart className="w-4 h-4" />
-            Adicionar
-          </motion.button>
+          {product.category === "Personalizados" ? (
+            <PersonalizedContactDialog
+              productId={product.id}
+              productName={product.name}
+              triggerClassName="mt-3 w-full py-2.5 bg-secondary text-secondary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-secondary/30"
+            />
+          ) : product.purchaseOptions ? (
+            <div className="mt-3 space-y-2">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() =>
+                  addItem({
+                    id: product.id,
+                    name: `${product.name} (${product.purchaseOptions?.defaultSelectionLabel || "padrao"})`,
+                    price: product.price,
+                    image: product.image,
+                  })
+                }
+                className="w-full py-2.5 bg-primary text-primary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-primary/30"
+              >
+                <ShoppingCart className="w-4 h-4" />
+                Adicionar ({product.purchaseOptions.defaultSelectionLabel || "padrao"})
+              </motion.button>
+              <ProductOptionsDialog
+                productId={product.id}
+                productName={product.name}
+                productPrice={product.price}
+                productImage={product.image}
+                purchaseOptions={product.purchaseOptions}
+                triggerClassName="w-full py-2.5 bg-muted text-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 transition-all hover:bg-border"
+              />
+            </div>
+          ) : (
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleAdd}
+              className="mt-3 w-full py-2.5 bg-primary text-primary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-primary/30"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              Adicionar
+            </motion.button>
+          )}
 
           {coinAnim && (
             <motion.span
@@ -70,6 +107,8 @@ const ProductCard = ({ product }: { product: typeof products[0] }) => {
 };
 
 const FeaturedProducts = () => {
+  const featuredProducts = products.slice(0, 6);
+
   return (
     <section className="py-20 relative z-10">
       <div className="container mx-auto px-4">
@@ -88,7 +127,7 @@ const FeaturedProducts = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product) => (
+          {featuredProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>

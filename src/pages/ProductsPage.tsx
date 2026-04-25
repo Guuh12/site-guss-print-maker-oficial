@@ -8,8 +8,10 @@ import { products } from "@/data/products";
 import { useCart } from "@/contexts/CartContext";
 import { ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
+import PersonalizedContactDialog from "@/components/PersonalizedContactDialog";
+import ProductOptionsDialog from "@/components/ProductOptionsDialog";
 
-const categories = ["Todos", "Geek", "Gamer", "Espacial", "Decoração", "Personalizados", "Utilidades"];
+const categories = ["Todos", "Cuidados Pessoais", "Bonecos", "Personalizados", "Utilidades"];
 
 const ProductsPage = () => {
   const [search, setSearch] = useState("");
@@ -77,12 +79,44 @@ const ProductsPage = () => {
                   <span className="font-pixel text-[10px] text-primary">{product.category}</span>
                   <h3 className="font-display font-bold text-foreground mt-1">{product.name}</h3>
                   <p className="font-display text-2xl font-bold text-primary mt-2">R$ {product.price.toFixed(2).replace(".", ",")}</p>
-                  <button
-                    onClick={() => addItem({ id: product.id, name: product.name, price: product.price, image: product.image })}
-                    className="mt-3 w-full py-2.5 bg-primary text-primary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-primary/30 transition-all"
-                  >
-                    <ShoppingCart className="w-4 h-4" /> Adicionar
-                  </button>
+                  {product.category === "Personalizados" ? (
+                    <PersonalizedContactDialog
+                      productId={product.id}
+                      productName={product.name}
+                      triggerClassName="mt-3 w-full py-2.5 bg-secondary text-secondary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-secondary/30 transition-all"
+                    />
+                  ) : product.purchaseOptions ? (
+                    <div className="mt-3 space-y-2">
+                      <button
+                        onClick={() =>
+                          addItem({
+                            id: product.id,
+                            name: `${product.name} (${product.purchaseOptions?.defaultSelectionLabel || "padrao"})`,
+                            price: product.price,
+                            image: product.image,
+                          })
+                        }
+                        className="w-full py-2.5 bg-primary text-primary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-primary/30 transition-all"
+                      >
+                        <ShoppingCart className="w-4 h-4" /> Adicionar ({product.purchaseOptions.defaultSelectionLabel || "padrao"})
+                      </button>
+                      <ProductOptionsDialog
+                        productId={product.id}
+                        productName={product.name}
+                        productPrice={product.price}
+                        productImage={product.image}
+                        purchaseOptions={product.purchaseOptions}
+                        triggerClassName="w-full py-2.5 bg-muted text-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 transition-all hover:bg-border"
+                      />
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => addItem({ id: product.id, name: product.name, price: product.price, image: product.image })}
+                      className="mt-3 w-full py-2.5 bg-primary text-primary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-primary/30 transition-all"
+                    >
+                      <ShoppingCart className="w-4 h-4" /> Adicionar
+                    </button>
+                  )}
                 </div>
               </motion.div>
             ))}
