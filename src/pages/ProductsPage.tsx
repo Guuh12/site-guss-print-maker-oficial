@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import PersonalizedContactDialog from "@/components/PersonalizedContactDialog";
 import ProductOptionsDialog from "@/components/ProductOptionsDialog";
 
-const categories = ["Todos", "Cuidados Pessoais", "Bonecos", "Personalizados", "Utilidades"];
+const categories = ["Todos", "Cuidados Pessoais", "Bonecos", "Personalizados", "Utilidades", "Outros"];
 
 const ProductsPage = () => {
   const [search, setSearch] = useState("");
@@ -78,7 +78,9 @@ const ProductsPage = () => {
                 <div className="p-4">
                   <span className="font-pixel text-[10px] text-primary">{product.category}</span>
                   <h3 className="font-display font-bold text-foreground mt-1">{product.name}</h3>
-                  <p className="font-display text-2xl font-bold text-primary mt-2">R$ {product.price.toFixed(2).replace(".", ",")}</p>
+                  <p className="font-display text-2xl font-bold text-primary mt-2">
+                    {product.priceLabel || `R$ ${product.price.toFixed(2).replace(".", ",")}`}
+                  </p>
                   {product.category === "Personalizados" ? (
                     <PersonalizedContactDialog
                       productId={product.id}

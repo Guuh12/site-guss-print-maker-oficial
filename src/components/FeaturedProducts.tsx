@@ -41,7 +41,7 @@ const ProductCard = ({ product }: { product: typeof products[0] }) => {
         <span className="font-pixel text-[10px] text-primary">{product.category}</span>
         <h3 className="font-display font-bold text-foreground mt-1">{product.name}</h3>
         <p className="font-display text-2xl font-bold text-primary mt-2">
-          R$ {product.price.toFixed(2).replace(".", ",")}
+          {product.priceLabel || `R$ ${product.price.toFixed(2).replace(".", ",")}`}
         </p>
 
         <div className="relative">

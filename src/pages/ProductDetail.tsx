@@ -59,7 +59,7 @@ const ProductDetail = () => {
               <span className="font-pixel text-xs text-primary">{product.category}</span>
               <h1 className="font-display text-3xl font-bold text-foreground mt-2">{product.name}</h1>
               <p className="font-display text-4xl font-bold text-primary mt-4">
-                R$ {product.price.toFixed(2).replace(".", ",")}
+                {product.priceLabel || `R$ ${product.price.toFixed(2).replace(".", ",")}`}
               </p>
               <p className="font-body text-lg text-muted-foreground mt-4">{product.description}</p>
 
