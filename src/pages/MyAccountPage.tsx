@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Package, User, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Package } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
@@ -9,6 +8,7 @@ import Footer from "@/components/Footer";
 import StarField from "@/components/StarField";
 import OrderDetailCard from "@/components/OrderDetailCard";
 import AddressManager from "@/components/AddressManager";
+import AccountProfile from "@/components/AccountProfile";
 
 interface Order {
   id: string;
@@ -20,7 +20,7 @@ interface Order {
 }
 
 const MyAccountPage = () => {
-  const { user, signOut, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -44,12 +44,6 @@ const MyAccountPage = () => {
     fetchOrders();
   }, [user]);
 
-  const handleOrderCancelled = (orderId: string) => {
-    setOrders((prev) =>
-      prev.map((o) => (o.id === orderId ? { ...o, status: "cancelled" } : o))
-    );
-  };
-
   if (authLoading || !user) return null;
 
   return (
@@ -60,23 +54,7 @@ const MyAccountPage = () => {
         <div className="container mx-auto px-4 max-w-4xl">
           <h1 className="font-pixel text-xl text-primary text-glow-cyan text-center mb-8">👤 MINHA CONTA</h1>
 
-          {/* Profile Card */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-card rounded-2xl border border-border p-6 mb-8 flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center shrink-0">
-              {user.user_metadata?.avatar_url ? (
-                <img src={user.user_metadata.avatar_url} alt="Avatar" className="w-full h-full rounded-full object-cover" />
-              ) : (
-                <User className="w-8 h-8 text-primary" />
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="font-display font-bold text-lg text-foreground truncate">{user.user_metadata?.full_name || user.email}</h2>
-              <p className="font-body text-muted-foreground truncate">{user.email}</p>
-            </div>
-            <button onClick={() => { signOut(); navigate("/"); }} className="px-4 py-2 bg-destructive/10 text-destructive rounded-lg font-display font-bold text-sm hover:bg-destructive/20 transition-colors flex items-center gap-2 shrink-0">
-              <LogOut className="w-4 h-4" /> Sair
-            </button>
-          </motion.div>
+          <AccountProfile />
 
           {/* Addresses */}
           <div className="mb-10">
@@ -90,7 +68,10 @@ const MyAccountPage = () => {
           ) : orders.length === 0 ? (
             <div className="bg-card rounded-2xl border border-border p-12 text-center">
               <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-              <p className="font-body text-muted-foreground">Nenhum pedido ainda.</p>
+              <p className="font-body text-muted-foreground mb-4">Nenhum pedido ainda.</p>
+              <Link to="/produtos" className="inline-flex px-4 py-2 bg-primary text-primary-foreground font-display font-bold text-sm rounded-lg">
+                Ver produtos
+              </Link>
             </div>
           ) : (
             <div className="space-y-4">
@@ -99,7 +80,6 @@ const MyAccountPage = () => {
                   key={order.id}
                   order={order}
                   index={i}
-                  onCancelled={handleOrderCancelled}
                 />
               ))}
             </div>

@@ -1,8 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, ChevronDown, ChevronUp, MapPin, FileText, XCircle, Package, Hash } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { Clock, ChevronDown, ChevronUp, MapPin, XCircle, Package, Hash, CreditCard } from "lucide-react";
 
 interface OrderProduct {
   name: string;
@@ -31,36 +30,31 @@ const statusLabels: Record<string, { label: string; color: string }> = {
 
 const canCancel = (status: string) => status === "pending" || status === "in_production";
 
+const progressSteps = [
+  { key: "pending", label: "Recebido" },
+  { key: "in_production", label: "Produção" },
+  { key: "printed", label: "Impresso" },
+  { key: "shipped", label: "Enviado" },
+  { key: "completed", label: "Entregue" },
+];
+
+const paymentNote = (status: string) => {
+  if (status === "cancelled") return "Pedido cancelado. Nenhum valor foi cobrado por aqui.";
+  if (status === "pending") return "Pagamento ainda não confirmado. A cobrança entra quando o meio de pagamento estiver ativo.";
+  return "Pedido seguido na produção. O comprovante de pagamento aparece aqui quando a cobrança estiver ligada.";
+};
+
 interface Props {
   order: Order;
   index: number;
-  onCancelled: (id: string) => void;
 }
 
-const OrderDetailCard = ({ order, index, onCancelled }: Props) => {
+const OrderDetailCard = ({ order, index }: Props) => {
   const [expanded, setExpanded] = useState(false);
-  const [cancelling, setCancelling] = useState(false);
+  const navigate = useNavigate();
   const s = statusLabels[order.status] || statusLabels.pending;
   const products: OrderProduct[] = Array.isArray(order.products) ? order.products : [];
   const orderDate = new Date(order.created_at);
-
-  const handleCancel = async () => {
-    if (!confirm("Tem certeza que deseja cancelar este pedido?")) return;
-    setCancelling(true);
-    try {
-      const { error } = await supabase
-        .from("orders")
-        .update({ status: "cancelled" as any })
-        .eq("id", order.id);
-      if (error) throw error;
-      onCancelled(order.id);
-      toast.success("Pedido cancelado com sucesso.");
-    } catch {
-      toast.error("Erro ao cancelar pedido.");
-    } finally {
-      setCancelling(false);
-    }
-  };
 
   return (
     <motion.div
@@ -98,7 +92,7 @@ const OrderDetailCard = ({ order, index, onCancelled }: Props) => {
           </div>
         </div>
         <div className="flex flex-col items-end gap-2 ml-4 shrink-0">
-          <span className={`font-pixel text-[8px] ${s.color}`}>{s.label}</span>
+          <span className={`font-display text-xs font-bold ${s.color}`}>{s.label}</span>
           {expanded ? (
             <ChevronUp className="w-4 h-4 text-muted-foreground" />
           ) : (
@@ -118,6 +112,36 @@ const OrderDetailCard = ({ order, index, onCancelled }: Props) => {
             className="overflow-hidden"
           >
             <div className="px-5 pb-5 space-y-4 border-t border-border pt-4">
+              {order.status === "cancelled" ? (
+                <p className="font-body text-sm text-destructive text-center bg-destructive/10 rounded-lg py-2">
+                  Este pedido foi cancelado.
+                </p>
+              ) : (
+                <ol className="grid grid-cols-5 gap-1">
+                  {progressSteps.map((step, stepIndex) => {
+                    const currentIndex = progressSteps.findIndex((item) => item.key === order.status);
+                    const reached = currentIndex >= stepIndex;
+                    return (
+                      <li key={step.key} className="text-center">
+                        <div className={`h-1.5 rounded-full mb-1 ${reached ? "bg-primary" : "bg-muted"}`} />
+                        <span className={`font-body text-[10px] leading-tight ${reached ? "text-foreground" : "text-muted-foreground"}`}>
+                          {step.label}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ol>
+              )}
+
+              <div>
+                <h3 className="font-pixel text-[8px] text-primary mb-2 flex items-center gap-2">
+                  <CreditCard className="w-3.5 h-3.5" /> PAGAMENTO
+                </h3>
+                <p className="font-body text-sm text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
+                  {paymentNote(order.status)}
+                </p>
+              </div>
+
               {/* Products with images */}
               <div>
                 <h3 className="font-pixel text-[8px] text-primary mb-3 flex items-center gap-2">
@@ -169,22 +193,6 @@ const OrderDetailCard = ({ order, index, onCancelled }: Props) => {
                 </div>
               )}
 
-              {/* Invoice */}
-              <div>
-                <h3 className="font-pixel text-[8px] text-primary mb-2 flex items-center gap-2">
-                  <FileText className="w-3.5 h-3.5" /> NOTA FISCAL
-                </h3>
-                {order.status === "completed" || order.status === "shipped" ? (
-                  <p className="font-body text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
-                    Nota fiscal disponível em breve.
-                  </p>
-                ) : (
-                  <p className="font-body text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
-                    A nota fiscal será emitida após o envio do pedido.
-                  </p>
-                )}
-              </div>
-
               {/* Order date details */}
               <div>
                 <h3 className="font-pixel text-[8px] text-primary mb-2 flex items-center gap-2">
@@ -205,20 +213,15 @@ const OrderDetailCard = ({ order, index, onCancelled }: Props) => {
               {/* Cancel button */}
               {canCancel(order.status) && (
                 <button
-                  onClick={handleCancel}
-                  disabled={cancelling}
-                  className="w-full py-3 bg-destructive/10 text-destructive font-display font-bold rounded-lg border border-destructive/30 hover:bg-destructive/20 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                  type="button"
+                  onClick={() => navigate(`/pedido/${order.id}/cancelar`)}
+                  className="w-full py-3 bg-destructive/10 text-destructive font-display font-bold rounded-lg border border-destructive/30 hover:bg-destructive/20 transition-colors flex items-center justify-center gap-2"
                 >
                   <XCircle className="w-4 h-4" />
-                  {cancelling ? "Cancelando..." : "Cancelar Pedido"}
+                  Cancelar Pedido
                 </button>
               )}
 
-              {order.status === "cancelled" && (
-                <p className="font-body text-sm text-destructive text-center bg-destructive/10 rounded-lg py-2">
-                  Este pedido foi cancelado.
-                </p>
-              )}
             </div>
           </motion.div>
         )}

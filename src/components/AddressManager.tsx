@@ -104,6 +104,7 @@ const AddressManager = () => {
   };
 
   const handleDelete = async (id: string) => {
+    if (!confirm("Remover este endereço?")) return;
     const { error } = await supabase.from("addresses").delete().eq("id", id);
     if (error) {
       toast({ title: "Erro ao remover", description: error.message, variant: "destructive" });

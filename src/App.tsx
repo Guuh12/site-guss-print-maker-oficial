@@ -15,6 +15,7 @@ import ContactPage from "./pages/ContactPage";
 import AuthPage from "./pages/AuthPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import MyAccountPage from "./pages/MyAccountPage";
+import OrderCancelledPage from "./pages/OrderCancelledPage";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -40,6 +41,7 @@ const App = () => (
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/minha-conta" element={<MyAccountPage />} />
+              <Route path="/pedido/:id/cancelar" element={<OrderCancelledPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

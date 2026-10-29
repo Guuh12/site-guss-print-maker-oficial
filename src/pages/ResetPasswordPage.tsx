@@ -12,14 +12,28 @@ const ResetPasswordPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [ready, setReady] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
     const hash = window.location.hash;
-    if (!hash.includes("type=recovery")) {
-      navigate("/auth");
+    const looksLikeRecovery =
+      hash.includes("type=recovery") || params.has("code") || params.get("type") === "recovery";
+
+    if (!looksLikeRecovery) {
+      navigate("/auth", { replace: true });
+      return;
     }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") {
+        setReady(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
   const handleReset = async (e: React.FormEvent) => {
@@ -49,6 +63,12 @@ const ResetPasswordPage = () => {
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md mx-4">
           <div className="bg-card rounded-2xl border border-border p-8 box-glow-cyan">
             <h1 className="font-pixel text-sm text-primary text-glow-cyan text-center mb-8">🔑 NOVA SENHA</h1>
+            {!ready ? (
+              <div className="flex flex-col items-center gap-3 py-6">
+                <div className="loading-retro" />
+                <p className="font-body text-sm text-muted-foreground text-center">Confirmando o link de recuperação...</p>
+              </div>
+            ) : (
             <form onSubmit={handleReset} className="space-y-4">
               <div className="relative">
                 <Lock className="absolute left-3 top-3 w-5 h-5 text-muted-foreground" />
@@ -62,6 +82,7 @@ const ResetPasswordPage = () => {
                 <Rocket className="w-5 h-5" /> Redefinir Senha
               </button>
             </form>
+            )}
           </div>
         </motion.div>
       </div>
