@@ -2,19 +2,16 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { MapPin, CreditCard, Check } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import StarField from "@/components/StarField";
-import { useToast } from "@/hooks/use-toast";
+import { formatBRL } from "@/lib/utils";
 
 const CheckoutPage = () => {
   const { user, loading: authLoading } = useAuth();
   const { items, total, clearCart } = useCart();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -47,9 +44,10 @@ const CheckoutPage = () => {
       if (error) throw error;
       clearCart();
       setSuccess(true);
-      toast({ title: "Pedido realizado! 🚀", description: "Acompanhe em Minha Conta." });
-    } catch (error: any) {
-      toast({ title: "Erro", description: error.message, variant: "destructive" });
+      toast.success("Pedido realizado! 🚀", { description: "Acompanhe em Minha Conta." });
+    } catch (error: unknown) {
+      const description = error instanceof Error ? error.message : "Não foi possível registrar o pedido.";
+      toast.error("Erro", { description });
     } finally {
       setLoading(false);
     }
@@ -59,10 +57,7 @@ const CheckoutPage = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-background">
-        <StarField />
-        <Navbar />
-        <div className="pt-24 pb-16 flex flex-col items-center justify-center min-h-[70vh] relative z-10">
+        <div className="pt-24 pb-16 flex flex-col items-center justify-center min-h-[70vh]">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-24 h-24 rounded-full bg-accent/20 border-4 border-accent flex items-center justify-center mb-6">
             <Check className="w-12 h-12 text-accent" />
           </motion.div>
@@ -73,21 +68,15 @@ const CheckoutPage = () => {
             <button onClick={() => navigate("/produtos")} className="flex-1 px-6 py-3 bg-muted text-foreground font-display font-bold rounded-lg border border-border text-center">Continuar Comprando</button>
           </div>
         </div>
-        <Footer />
-      </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <StarField />
-      <Navbar />
-      <div className="pt-24 pb-16 relative z-10">
+      <div className="pt-24 pb-16">
         <div className="container mx-auto px-4 max-w-3xl">
           <h1 className="font-pixel text-xl text-primary text-glow-cyan text-center mb-8">💳 CHECKOUT</h1>
 
           <div className="grid md:grid-cols-5 gap-6">
-            {/* Order Summary */}
             <div className="md:col-span-2 bg-card rounded-2xl border border-border p-5">
               <h2 className="font-pixel text-[10px] text-primary mb-4">RESUMO</h2>
               <div className="space-y-3 mb-4">
@@ -96,18 +85,17 @@ const CheckoutPage = () => {
                     <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover" />
                     <div className="flex-1">
                       <p className="font-body text-sm text-foreground">{item.name}</p>
-                      <p className="font-body text-xs text-muted-foreground">{item.quantity}x R$ {item.price.toFixed(2).replace(".", ",")}</p>
+                      <p className="font-body text-xs text-muted-foreground">{item.quantity}x {formatBRL(item.price)}</p>
                     </div>
                   </div>
                 ))}
               </div>
               <div className="pt-3 border-t border-border flex justify-between items-center">
                 <span className="font-display font-bold text-foreground">Total</span>
-                <span className="font-display text-2xl font-bold text-primary">R$ {total.toFixed(2).replace(".", ",")}</span>
+                <span className="font-display text-2xl font-bold text-primary">{formatBRL(total)}</span>
               </div>
             </div>
 
-            {/* Address Form */}
             <form onSubmit={handleOrder} className="md:col-span-3 bg-card rounded-2xl border border-border p-6 space-y-4">
               <h2 className="font-pixel text-[10px] text-primary mb-2 flex items-center gap-2"><MapPin className="w-4 h-4" /> ENDEREÇO DE ENTREGA</h2>
               <textarea
@@ -135,8 +123,6 @@ const CheckoutPage = () => {
           </div>
         </div>
       </div>
-      <Footer />
-    </div>
   );
 };
 

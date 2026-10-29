@@ -1,35 +1,23 @@
-/**
- * Carrega todas as imagens de `src/assets/produtos` no build (Vite).
- * Nos produtos, use só o caminho relativo depois de `produtos/`, com "/".
- *
- * Ex.: productImageUrl("Bonecos/papaguio-mine1.jpg")
- *
- * Observação: qualquer arquivo que combine com o glob abaixo entra no bundle,
- * mesmo sem aparecer em `products`. Mantenha nessa pasta só fotos do catálogo.
- */
-const eagerImages = import.meta.glob<{ default: string }>(
+const eagerImages = import.meta.glob<string>(
   "../assets/produtos/**/*.{jpg,jpeg,png,webp}",
-  { eager: true }
+  { eager: true, import: "default" }
 );
 
 const urlByRelativePath = new Map<string, string>();
 
-for (const [filePath, mod] of Object.entries(eagerImages)) {
+for (const [filePath, url] of Object.entries(eagerImages)) {
   const normalized = filePath.replace(/\\/g, "/");
   const marker = "/produtos/";
   const i = normalized.indexOf(marker);
   if (i === -1) continue;
-  const relative = normalized.slice(i + marker.length);
-  urlByRelativePath.set(relative, mod.default);
+  urlByRelativePath.set(normalized.slice(i + marker.length), url);
 }
 
-/** Caminho após `src/assets/produtos/`. Ex.: "Cuidados Pessoais/porta-cotonete1.jpg" */
 export function productImageUrl(relativeToProdutos: string): string {
   const key = relativeToProdutos.replace(/\\/g, "/").replace(/^\//, "");
   const url = urlByRelativePath.get(key);
   if (!url) {
-    const available = [...urlByRelativePath.keys()].sort().join(", ");
-    throw new Error(`Imagem não encontrada: produtos/${key}. Registradas: ${available}`);
+    throw new Error(`Imagem não encontrada: produtos/${key}`);
   }
   return url;
 }

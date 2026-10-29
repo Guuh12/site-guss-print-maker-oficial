@@ -10,7 +10,6 @@ function safeInternalPath(path: string): string {
   return path;
 }
 
-/** Guarda para onde voltar depois do provedor, sem depender da query na URL de callback. */
 export function rememberPostLoginPath(path: string) {
   sessionStorage.setItem(POST_LOGIN_PATH_KEY, safeInternalPath(path));
 }

@@ -3,21 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { Package } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import StarField from "@/components/StarField";
 import OrderDetailCard from "@/components/OrderDetailCard";
 import AddressManager from "@/components/AddressManager";
 import AccountProfile from "@/components/AccountProfile";
-
-interface Order {
-  id: string;
-  products: any;
-  total: number;
-  status: string;
-  address: string | null;
-  created_at: string;
-}
+import { asOrders, type Order } from "@/types/order";
 
 const MyAccountPage = () => {
   const { user, loading: authLoading } = useAuth();
@@ -38,7 +27,7 @@ const MyAccountPage = () => {
         .from("orders")
         .select("*")
         .order("created_at", { ascending: false });
-      setOrders(data || []);
+      setOrders(asOrders(data));
       setLoading(false);
     };
     fetchOrders();
@@ -47,21 +36,16 @@ const MyAccountPage = () => {
   if (authLoading || !user) return null;
 
   return (
-    <div className="min-h-screen bg-background">
-      <StarField />
-      <Navbar />
-      <div className="pt-24 pb-16 relative z-10">
+    <div className="pt-24 pb-16">
         <div className="container mx-auto px-4 max-w-4xl">
           <h1 className="font-pixel text-xl text-primary text-glow-cyan text-center mb-8">👤 MINHA CONTA</h1>
 
           <AccountProfile />
 
-          {/* Addresses */}
           <div className="mb-10">
             <AddressManager />
           </div>
 
-          {/* Orders */}
           <h2 className="font-pixel text-sm text-primary text-glow-cyan mb-4">📦 MEUS PEDIDOS</h2>
           {loading ? (
             <div className="flex justify-center py-12"><div className="loading-retro" /></div>
@@ -85,8 +69,6 @@ const MyAccountPage = () => {
             </div>
           )}
         </div>
-      </div>
-      <Footer />
     </div>
   );
 };

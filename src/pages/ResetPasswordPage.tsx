@@ -2,11 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Lock, Rocket } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import StarField from "@/components/StarField";
-import { useToast } from "@/hooks/use-toast";
 
 const ResetPasswordPage = () => {
   const [password, setPassword] = useState("");
@@ -14,7 +11,6 @@ const ResetPasswordPage = () => {
   const [loading, setLoading] = useState(false);
   const [ready, setReady] = useState(false);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -39,27 +35,25 @@ const ResetPasswordPage = () => {
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      toast({ title: "Erro", description: "As senhas não coincidem.", variant: "destructive" });
+      toast.error("Erro", { description: "As senhas não coincidem." });
       return;
     }
     setLoading(true);
     try {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
-      toast({ title: "Senha atualizada! 🚀", description: "Você já pode fazer login." });
+      toast.success("Senha atualizada! 🚀", { description: "Você já pode fazer login." });
       navigate("/");
-    } catch (error: any) {
-      toast({ title: "Erro", description: error.message, variant: "destructive" });
+    } catch (error: unknown) {
+      const description = error instanceof Error ? error.message : "Não foi possível atualizar a senha.";
+      toast.error("Erro", { description });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <StarField />
-      <Navbar />
-      <div className="pt-24 pb-16 flex items-center justify-center min-h-screen relative z-10">
+    <div className="pt-24 pb-16 flex items-center justify-center min-h-[70vh]">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md mx-4">
           <div className="bg-card rounded-2xl border border-border p-8 box-glow-cyan">
             <h1 className="font-pixel text-sm text-primary text-glow-cyan text-center mb-8">🔑 NOVA SENHA</h1>
@@ -85,8 +79,6 @@ const ResetPasswordPage = () => {
             )}
           </div>
         </motion.div>
-      </div>
-      <Footer />
     </div>
   );
 };

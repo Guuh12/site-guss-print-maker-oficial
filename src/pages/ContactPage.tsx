@@ -2,9 +2,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Send, MessageCircle, Instagram, Mail } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import StarField from "@/components/StarField";
 import { toast } from "sonner";
 
 const ContactPage = () => {
@@ -44,10 +41,7 @@ const ContactPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <StarField />
-      <Navbar />
-      <div className="pt-24 pb-16 relative z-10">
+      <div className="pt-24 pb-16">
         <div className="container mx-auto px-4 max-w-4xl">
           <h1 className="font-pixel text-xl text-primary text-glow-cyan text-center mb-8">📞 CONTATO</h1>
 
@@ -112,8 +106,6 @@ const ContactPage = () => {
           </div>
         </div>
       </div>
-      <Footer />
-    </div>
   );
 };
 

@@ -107,7 +107,6 @@ export const products: Product[] = [
     color: "Personalizado",
     size: "Caixa: 15 cm de altura | Boneco: variavel de 10 a 13 cm de altura",
     productionTime: "7 dias",
-    // Personalizacao sob medida sera implementada em uma etapa futura.
   },
   {
     id: "boneco-punk-pet",

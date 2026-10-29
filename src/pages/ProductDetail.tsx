@@ -1,12 +1,10 @@
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ShoppingCart, ArrowLeft, Package, Palette, Ruler, Clock } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import StarField from "@/components/StarField";
 import ProductGallery from "@/components/ProductGallery";
 import { products } from "@/data/products";
 import { useCart } from "@/contexts/CartContext";
+import { formatBRL } from "@/lib/utils";
 import PersonalizedContactDialog from "@/components/PersonalizedContactDialog";
 import ProductOptionsDialog from "@/components/ProductOptionsDialog";
 
@@ -17,7 +15,7 @@ const ProductDetail = () => {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center">
         <p className="font-pixel text-primary">Produto não encontrado</p>
       </div>
     );
@@ -31,10 +29,7 @@ const ProductDetail = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <StarField />
-      <Navbar />
-      <div className="pt-24 pb-16 relative z-10">
+    <div className="pt-24 pb-16">
         <div className="container mx-auto px-4">
           <Link to="/produtos" className="inline-flex items-center gap-2 font-body text-muted-foreground hover:text-primary mb-6">
             <ArrowLeft className="w-4 h-4" /> Voltar
@@ -59,7 +54,7 @@ const ProductDetail = () => {
               <span className="font-pixel text-xs text-primary">{product.category}</span>
               <h1 className="font-display text-3xl font-bold text-foreground mt-2">{product.name}</h1>
               <p className="font-display text-4xl font-bold text-primary mt-4">
-                {product.priceLabel || `R$ ${product.price.toFixed(2).replace(".", ",")}`}
+                {product.priceLabel || formatBRL(product.price)}
               </p>
               <p className="font-body text-lg text-muted-foreground mt-4">{product.description}</p>
 
@@ -123,8 +118,6 @@ const ProductDetail = () => {
             </motion.div>
           </div>
         </div>
-      </div>
-      <Footer />
     </div>
   );
 };

@@ -8,10 +8,8 @@ const NeonDivider = () => {
 
   return (
     <div className="relative z-10 h-0 flex items-center justify-center overflow-visible -my-px mt-8 md:mt-0">
-      {/* Base glow spread */}
       <div className="absolute w-full h-8 bg-gradient-to-r from-transparent via-primary/10 to-transparent blur-xl" />
 
-      {/* Main neon line */}
       <div className="relative w-full max-w-5xl mx-auto h-[2px]">
         <div
           className="absolute inset-0"
@@ -21,7 +19,6 @@ const NeonDivider = () => {
           }}
         />
 
-        {/* Energy pulse traveling along the line */}
         <motion.div
           className="absolute top-[-3px] h-[8px] w-24 rounded-full"
           style={{
@@ -32,7 +29,6 @@ const NeonDivider = () => {
           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", repeatDelay: 1 }}
         />
 
-        {/* Rising particles */}
         {sparks.map((s) => (
           <motion.span
             key={s.id}

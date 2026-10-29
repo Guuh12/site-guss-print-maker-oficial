@@ -44,7 +44,6 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* User Menu */}
           {user ? (
             <div className="relative">
               <button

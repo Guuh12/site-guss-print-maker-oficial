@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Plus, Pencil, Trash2, X, Check, Home, Building } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
 
 interface Address {
   id: string;
@@ -34,7 +34,6 @@ const emptyAddress: Omit<Address, "id"> = {
 
 const AddressManager = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<string | null>(null);
@@ -69,18 +68,19 @@ const AddressManager = () => {
           .update({ ...form })
           .eq("id", editing);
         if (error) throw error;
-        toast({ title: "Endereço atualizado! ✅" });
+        toast.success("Endereço atualizado! ✅");
       } else {
         const { error } = await supabase
           .from("addresses")
           .insert({ ...form, user_id: user.id });
         if (error) throw error;
-        toast({ title: "Endereço adicionado! ✅" });
+        toast.success("Endereço adicionado! ✅");
       }
       await fetchAddresses();
       resetForm();
-    } catch (error: any) {
-      toast({ title: "Erro", description: error.message, variant: "destructive" });
+    } catch (error: unknown) {
+      const description = error instanceof Error ? error.message : "Não foi possível salvar o endereço.";
+      toast.error("Erro", { description });
     } finally {
       setSaving(false);
     }
@@ -107,10 +107,10 @@ const AddressManager = () => {
     if (!confirm("Remover este endereço?")) return;
     const { error } = await supabase.from("addresses").delete().eq("id", id);
     if (error) {
-      toast({ title: "Erro ao remover", description: error.message, variant: "destructive" });
+      toast.error("Erro ao remover", { description: error.message });
     } else {
       setAddresses((prev) => prev.filter((a) => a.id !== id));
-      toast({ title: "Endereço removido" });
+      toast.success("Endereço removido");
     }
   };
 

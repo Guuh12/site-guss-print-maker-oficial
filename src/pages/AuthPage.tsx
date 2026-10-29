@@ -1,16 +1,12 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mail, Lock, User, Eye, EyeOff, Rocket } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { consumePostLoginPath, peekPostLoginPath, signInWithOAuth, type SocialProvider } from "@/integrations/supabase/oauth";
 import { authErrorMessage } from "@/lib/authErrors";
 import { useAuth } from "@/contexts/AuthContext";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import StarField from "@/components/StarField";
-import { useToast } from "@/hooks/use-toast";
-import { useEffect } from "react";
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -24,7 +20,6 @@ const AuthPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
-  const { toast } = useToast();
 
   const redirectParam = searchParams.get("redirect");
   const redirectToRef = useRef<string | null>(null);
@@ -39,10 +34,8 @@ const AuthPage = () => {
   useEffect(() => {
     const oauthError = searchParams.get("error_description") || searchParams.get("error");
     if (!oauthError) return;
-    toast({
-      title: "Não foi possível entrar",
+    toast.error("Não foi possível entrar", {
       description: authErrorMessage(new Error(oauthError.replace(/\+/g, " "))),
-      variant: "destructive",
     });
   }, [searchParams, toast]);
 
@@ -61,14 +54,14 @@ const AuthPage = () => {
           redirectTo: `${window.location.origin}/reset-password`,
         });
         if (error) throw error;
-        toast({ title: "E-mail enviado!", description: "Verifique sua caixa de entrada para redefinir a senha." });
+        toast.success("E-mail enviado!", { description: "Verifique sua caixa de entrada para redefinir a senha." });
         setResetMode(false);
       } else if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       } else {
         if (password !== confirmPassword) {
-          toast({ title: "Erro", description: "As senhas não coincidem.", variant: "destructive" });
+          toast.error("Erro", { description: "As senhas não coincidem." });
           setLoading(false);
           return;
         }
@@ -82,13 +75,13 @@ const AuthPage = () => {
         });
         if (error) throw error;
         if (data.session) {
-          toast({ title: "Conta criada! 🚀", description: "Você já está conectado." });
+          toast.success("Conta criada! 🚀", { description: "Você já está conectado." });
         } else {
-          toast({ title: "Conta criada! 🚀", description: "Verifique seu e-mail para confirmar o cadastro." });
+          toast.success("Conta criada! 🚀", { description: "Verifique seu e-mail para confirmar o cadastro." });
         }
       }
     } catch (error: unknown) {
-      toast({ title: "Erro", description: authErrorMessage(error), variant: "destructive" });
+      toast.error("Erro", { description: authErrorMessage(error) });
     } finally {
       setLoading(false);
     }
@@ -99,16 +92,13 @@ const AuthPage = () => {
     try {
       await signInWithOAuth(provider, redirectTo);
     } catch (error: unknown) {
-      toast({ title: "Erro", description: authErrorMessage(error), variant: "destructive" });
+      toast.error("Erro", { description: authErrorMessage(error) });
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <StarField />
-      <Navbar />
-      <div className="pt-24 pb-16 flex items-center justify-center min-h-screen relative z-10">
+    <div className="pt-24 pb-16 flex items-center justify-center min-h-[70vh]">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -270,8 +260,6 @@ const AuthPage = () => {
             </div>
           </div>
         </motion.div>
-      </div>
-      <Footer />
     </div>
   );
 };

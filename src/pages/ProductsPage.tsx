@@ -1,13 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import StarField from "@/components/StarField";
+import { Search, ShoppingCart } from "lucide-react";
+import { Link } from "react-router-dom";
 import { products } from "@/data/products";
 import { useCart } from "@/contexts/CartContext";
-import { ShoppingCart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { formatBRL } from "@/lib/utils";
 import PersonalizedContactDialog from "@/components/PersonalizedContactDialog";
 import ProductOptionsDialog from "@/components/ProductOptionsDialog";
 
@@ -25,10 +22,7 @@ const ProductsPage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background">
-      <StarField />
-      <Navbar />
-      <div className="pt-24 pb-16 relative z-10">
+      <div className="pt-24 pb-16">
         <div className="container mx-auto px-4">
           <h1 className="font-pixel text-xl text-primary text-glow-cyan text-center mb-8">🛍 PRODUTOS</h1>
 
@@ -72,14 +66,14 @@ const ProductsPage = () => {
               >
                 <Link to={`/produto/${product.id}`}>
                   <div className="aspect-square overflow-hidden">
-                    <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    <img src={product.image} alt={product.name} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                   </div>
                 </Link>
                 <div className="p-4">
                   <span className="font-pixel text-[10px] text-primary">{product.category}</span>
                   <h3 className="font-display font-bold text-foreground mt-1">{product.name}</h3>
                   <p className="font-display text-2xl font-bold text-primary mt-2">
-                    {product.priceLabel || `R$ ${product.price.toFixed(2).replace(".", ",")}`}
+                    {product.priceLabel || formatBRL(product.price)}
                   </p>
                   {product.category === "Personalizados" ? (
                     <PersonalizedContactDialog
@@ -131,8 +125,6 @@ const ProductsPage = () => {
           )}
         </div>
       </div>
-      <Footer />
-    </div>
   );
 };
 

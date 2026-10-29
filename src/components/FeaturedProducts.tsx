@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import PersonalizedContactDialog from "@/components/PersonalizedContactDialog";
 import ProductOptionsDialog from "@/components/ProductOptionsDialog";
+import { formatBRL } from "@/lib/utils";
 
 const ProductCard = ({ product }: { product: typeof products[0] }) => {
   const { addItem } = useCart();
@@ -31,6 +32,8 @@ const ProductCard = ({ product }: { product: typeof products[0] }) => {
           <img
             src={product.image}
             alt={product.name}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-card/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -41,7 +44,7 @@ const ProductCard = ({ product }: { product: typeof products[0] }) => {
         <span className="font-pixel text-[10px] text-primary">{product.category}</span>
         <h3 className="font-display font-bold text-foreground mt-1">{product.name}</h3>
         <p className="font-display text-2xl font-bold text-primary mt-2">
-          {product.priceLabel || `R$ ${product.price.toFixed(2).replace(".", ",")}`}
+          {product.priceLabel || formatBRL(product.price)}
         </p>
 
         <div className="relative">

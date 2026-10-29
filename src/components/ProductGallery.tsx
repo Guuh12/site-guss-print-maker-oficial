@@ -10,7 +10,6 @@ interface ProductGalleryProps {
 }
 
 const ProductGallery = ({ mainImage, media, productName }: ProductGalleryProps) => {
-  // Build the full media list: main image first, then extras
   const allMedia: ProductMedia[] = [
     { type: "image", url: mainImage },
     ...(media || []),
@@ -26,7 +25,6 @@ const ProductGallery = ({ mainImage, media, productName }: ProductGalleryProps) 
 
   return (
     <div className="space-y-3">
-      {/* Main display */}
       <div className="relative rounded-xl overflow-hidden border border-border bg-muted aspect-square">
         <AnimatePresence mode="wait">
           {item.type === "video" ? (
@@ -55,7 +53,6 @@ const ProductGallery = ({ mainImage, media, productName }: ProductGalleryProps) 
           )}
         </AnimatePresence>
 
-        {/* Navigation arrows - only show if more than 1 media */}
         {allMedia.length > 1 && (
           <>
             <button
@@ -71,7 +68,6 @@ const ProductGallery = ({ mainImage, media, productName }: ProductGalleryProps) 
               <ChevronRight className="w-5 h-5" />
             </button>
 
-            {/* Dots */}
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
               {allMedia.map((_, i) => (
                 <button
@@ -85,7 +81,6 @@ const ProductGallery = ({ mainImage, media, productName }: ProductGalleryProps) 
         )}
       </div>
 
-      {/* Thumbnails - only show if more than 1 media */}
       {allMedia.length > 1 && (
         <div className="flex gap-2 overflow-x-auto pb-1">
           {allMedia.map((m, i) => (

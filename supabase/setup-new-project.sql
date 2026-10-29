@@ -1,5 +1,5 @@
--- Estrutura do site no projeto Supabase novo.
--- Rode uma vez no SQL Editor.
+-- Schema atual do site. É este arquivo que vale em um projeto Supabase novo.
+-- Rode uma vez no SQL Editor. Não duplique estas tabelas em outro script.
 
 DO $$ BEGIN
   CREATE TYPE public.order_status AS ENUM (

@@ -11,7 +11,6 @@ const NeonPortal = () => {
 
   return (
     <div className="relative w-48 h-48 md:w-64 md:h-64 mb-6">
-      {/* Orbiting particles */}
       {particles.map((p) => (
         <motion.div
           key={p.id}
@@ -46,10 +45,8 @@ const NeonPortal = () => {
         </motion.div>
       ))}
 
-      {/* Outer glow */}
       <div className="absolute inset-[-12px] rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 blur-xl" />
 
-      {/* Rotating neon border */}
       <motion.div
         className="absolute inset-[-4px] rounded-full"
         style={{
@@ -62,7 +59,6 @@ const NeonPortal = () => {
         <div className="w-full h-full rounded-full bg-background" />
       </motion.div>
 
-      {/* Glassmorphism container with GIF */}
       <motion.div
         className="absolute inset-0 rounded-full overflow-hidden"
         style={{

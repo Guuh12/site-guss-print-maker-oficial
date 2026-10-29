@@ -2,34 +2,16 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { XCircle, Package } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import StarField from "@/components/StarField";
-import { useToast } from "@/hooks/use-toast";
-
-interface OrderProduct {
-  name: string;
-  price: number;
-  quantity: number;
-  image?: string;
-}
-
-interface Order {
-  id: string;
-  products: OrderProduct[] | null;
-  total: number;
-  status: string;
-  address: string | null;
-  created_at: string;
-}
+import { formatBRL } from "@/lib/utils";
+import { asOrder, canCancelOrder, orderItems, type Order } from "@/types/order";
 
 const OrderCancelledPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { toast } = useToast();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
@@ -54,13 +36,13 @@ const OrderCancelledPage = () => {
         if (error.message.includes("schema cache") || error.code === "PGRST205") {
           setMissingTable(true);
         } else {
-          toast({ title: "Erro", description: error.message, variant: "destructive" });
+          toast.error("Erro", { description: error.message });
         }
         setLoading(false);
         return;
       }
 
-      setOrder(data as Order | null);
+      setOrder(asOrder(data));
       setLoading(false);
     };
     load();
@@ -75,7 +57,7 @@ const OrderCancelledPage = () => {
       .eq("id", order.id);
 
     if (error) {
-      toast({ title: "Não foi possível cancelar", description: error.message, variant: "destructive" });
+      toast.error("Não foi possível cancelar", { description: error.message });
       setCancelling(false);
       return;
     }
@@ -86,15 +68,12 @@ const OrderCancelledPage = () => {
 
   if (authLoading || !user) return null;
 
-  const products = Array.isArray(order?.products) ? order.products : [];
+  const products = orderItems(order?.products);
   const cancelled = order?.status === "cancelled";
-  const canCancel = order?.status === "pending" || order?.status === "in_production";
+  const canCancel = order ? canCancelOrder(order.status) : false;
 
   return (
-    <div className="min-h-screen bg-background">
-      <StarField />
-      <Navbar />
-      <div className="pt-24 pb-16 flex flex-col items-center justify-center min-h-[70vh] relative z-10 px-4">
+    <div className="pt-24 pb-16 flex flex-col items-center justify-center min-h-[70vh] px-4">
         {loading ? (
           <div className="loading-retro" />
         ) : missingTable ? (
@@ -156,7 +135,7 @@ const OrderCancelledPage = () => {
                     <div className="flex-1 min-w-0">
                       <p className="font-body text-sm text-foreground">{item.name}</p>
                       <p className="font-body text-xs text-muted-foreground">
-                        {item.quantity}x R$ {Number(item.price).toFixed(2).replace(".", ",")}
+                        {item.quantity}x {formatBRL(item.price)}
                       </p>
                     </div>
                   </div>
@@ -165,7 +144,7 @@ const OrderCancelledPage = () => {
               <div className="pt-3 border-t border-border flex justify-between items-center">
                 <span className="font-display font-bold text-foreground">Total</span>
                 <span className="font-display text-2xl font-bold text-primary">
-                  R$ {Number(order.total).toFixed(2).replace(".", ",")}
+                  {formatBRL(order.total)}
                 </span>
               </div>
               {order.address && (
@@ -199,8 +178,6 @@ const OrderCancelledPage = () => {
             </div>
           </motion.div>
         )}
-      </div>
-      <Footer />
     </div>
   );
 };

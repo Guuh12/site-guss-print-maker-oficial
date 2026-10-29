@@ -1,9 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Upload, Send, X, FileBox } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import StarField from "@/components/StarField";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -73,7 +70,6 @@ const CustomProject = () => {
 
       if (error) throw error;
 
-      // Send email notification
       supabase.functions.invoke("notify-project-request", {
         body: {
           name: formData.name,
@@ -97,10 +93,7 @@ const CustomProject = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <StarField />
-      <Navbar />
-      <div className="pt-24 pb-16 relative z-10">
+      <div className="pt-24 pb-16">
         <div className="container mx-auto px-4 max-w-2xl">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <h1 className="font-pixel text-xl text-primary text-glow-cyan text-center mb-3">🧠 PROJETO PERSONALIZADO</h1>
@@ -213,8 +206,6 @@ const CustomProject = () => {
           </motion.div>
         </div>
       </div>
-      <Footer />
-    </div>
   );
 };
 

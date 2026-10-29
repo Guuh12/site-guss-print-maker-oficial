@@ -2,22 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock, ChevronDown, ChevronUp, MapPin, XCircle, Package, Hash, CreditCard } from "lucide-react";
-
-interface OrderProduct {
-  name: string;
-  price: number;
-  quantity: number;
-  image?: string;
-}
-
-interface Order {
-  id: string;
-  products: any;
-  total: number;
-  status: string;
-  address: string | null;
-  created_at: string;
-}
+import { formatBRL } from "@/lib/utils";
+import { canCancelOrder, orderItems, type Order } from "@/types/order";
 
 const statusLabels: Record<string, { label: string; color: string }> = {
   pending: { label: "⏳ Pendente", color: "text-yellow-400" },
@@ -27,8 +13,6 @@ const statusLabels: Record<string, { label: string; color: string }> = {
   completed: { label: "✅ Finalizado", color: "text-green-400" },
   cancelled: { label: "❌ Cancelado", color: "text-destructive" },
 };
-
-const canCancel = (status: string) => status === "pending" || status === "in_production";
 
 const progressSteps = [
   { key: "pending", label: "Recebido" },
@@ -53,7 +37,7 @@ const OrderDetailCard = ({ order, index }: Props) => {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
   const s = statusLabels[order.status] || statusLabels.pending;
-  const products: OrderProduct[] = Array.isArray(order.products) ? order.products : [];
+  const products = orderItems(order.products);
   const orderDate = new Date(order.created_at);
 
   return (
@@ -63,7 +47,6 @@ const OrderDetailCard = ({ order, index }: Props) => {
       transition={{ delay: index * 0.1 }}
       className="bg-card rounded-xl border border-border overflow-hidden"
     >
-      {/* Clickable Header */}
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full p-5 text-left flex justify-between items-start hover:bg-muted/30 transition-colors"
@@ -87,7 +70,7 @@ const OrderDetailCard = ({ order, index }: Props) => {
           <div className="flex justify-between items-center mt-3 pt-3 border-t border-border">
             <span className="font-body text-muted-foreground text-sm">Total</span>
             <span className="font-display font-bold text-primary">
-              R$ {Number(order.total).toFixed(2).replace(".", ",")}
+              {formatBRL(order.total)}
             </span>
           </div>
         </div>
@@ -101,7 +84,6 @@ const OrderDetailCard = ({ order, index }: Props) => {
         </div>
       </button>
 
-      {/* Expandable Details */}
       <AnimatePresence>
         {expanded && (
           <motion.div
@@ -142,7 +124,6 @@ const OrderDetailCard = ({ order, index }: Props) => {
                 </p>
               </div>
 
-              {/* Products with images */}
               <div>
                 <h3 className="font-pixel text-[8px] text-primary mb-3 flex items-center gap-2">
                   <Package className="w-3.5 h-3.5" /> ITENS DO PEDIDO
@@ -160,18 +141,17 @@ const OrderDetailCard = ({ order, index }: Props) => {
                       <div className="flex-1">
                         <p className="font-body text-sm text-foreground font-semibold">{p.name}</p>
                         <p className="font-body text-xs text-muted-foreground">
-                          {p.quantity}x R$ {Number(p.price).toFixed(2).replace(".", ",")}
+                          {p.quantity}x {formatBRL(p.price)}
                         </p>
                       </div>
                       <span className="font-body text-sm text-foreground">
-                        R$ {(p.quantity * p.price).toFixed(2).replace(".", ",")}
+                        {formatBRL(p.quantity * p.price)}
                       </span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Order ID */}
               <div>
                 <h3 className="font-pixel text-[8px] text-primary mb-2 flex items-center gap-2">
                   <Hash className="w-3.5 h-3.5" /> CÓDIGO DO PEDIDO
@@ -181,7 +161,6 @@ const OrderDetailCard = ({ order, index }: Props) => {
                 </p>
               </div>
 
-              {/* Address */}
               {order.address && (
                 <div>
                   <h3 className="font-pixel text-[8px] text-primary mb-2 flex items-center gap-2">
@@ -193,7 +172,6 @@ const OrderDetailCard = ({ order, index }: Props) => {
                 </div>
               )}
 
-              {/* Order date details */}
               <div>
                 <h3 className="font-pixel text-[8px] text-primary mb-2 flex items-center gap-2">
                   <Clock className="w-3.5 h-3.5" /> DATA DO PEDIDO
@@ -210,8 +188,7 @@ const OrderDetailCard = ({ order, index }: Props) => {
                 </p>
               </div>
 
-              {/* Cancel button */}
-              {canCancel(order.status) && (
+              {canCancelOrder(order.status) && (
                 <button
                   type="button"
                   onClick={() => navigate(`/pedido/${order.id}/cancelar`)}

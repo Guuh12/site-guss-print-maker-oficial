@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogOut, User, Phone, Lock, Save } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
 
 const providerLabels: Record<string, string> = {
   email: "E-mail",
@@ -17,7 +17,6 @@ const inputClass =
 const AccountProfile = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [name, setName] = useState(user?.user_metadata?.full_name || user?.user_metadata?.name || "");
@@ -42,7 +41,7 @@ const AccountProfile = () => {
     const trimmedName = name.trim();
     const trimmedPhone = phone.trim();
     if (!trimmedName) {
-      toast({ title: "Informe seu nome", variant: "destructive" });
+      toast.error("Informe seu nome");
       return;
     }
 
@@ -68,10 +67,10 @@ const AccountProfile = () => {
       }
 
       setEditing(false);
-      toast({ title: "Dados atualizados" });
+      toast.success("Dados atualizados");
     } catch (error: unknown) {
       const description = error instanceof Error ? error.message : "Não foi possível salvar.";
-      toast({ title: "Erro", description, variant: "destructive" });
+      toast.error("Erro", { description });
     } finally {
       setSaving(false);
     }
@@ -81,11 +80,11 @@ const AccountProfile = () => {
     e.preventDefault();
     if (!user.email) return;
     if (newPassword.length < 6) {
-      toast({ title: "A senha precisa ter pelo menos 6 caracteres", variant: "destructive" });
+      toast.error("A senha precisa ter pelo menos 6 caracteres");
       return;
     }
     if (newPassword !== confirmPassword) {
-      toast({ title: "As senhas não coincidem", variant: "destructive" });
+      toast.error("As senhas não coincidem");
       return;
     }
 
@@ -104,10 +103,10 @@ const AccountProfile = () => {
       setNewPassword("");
       setConfirmPassword("");
       setShowPassword(false);
-      toast({ title: "Senha atualizada" });
+      toast.success("Senha atualizada");
     } catch (error: unknown) {
       const description = error instanceof Error ? error.message : "Não foi possível trocar a senha.";
-      toast({ title: "Erro", description, variant: "destructive" });
+      toast.error("Erro", { description });
     } finally {
       setSavingPassword(false);
     }
