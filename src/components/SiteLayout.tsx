@@ -26,7 +26,7 @@ const SiteLayout = () => {
         </Suspense>
       </div>
       <Footer />
-      {isVitrine && <VitrineWhatsAppFloat />}
+      <VitrineWhatsAppFloat />
     </div>
   );
 };

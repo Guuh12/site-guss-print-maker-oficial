@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { MessageCircle, ShoppingBag } from "lucide-react";
-import { SHOP_HOME } from "@/vitrine/siteMode";
-import { VITRINE_HELLO, whatsAppLink } from "@/vitrine/whatsapp";
+import { SHOP_HOME, useSiteMode } from "@/vitrine/siteMode";
+import { SHOP_HELLO, VITRINE_HELLO, whatsAppLink } from "@/vitrine/whatsapp";
 
 export const VitrineBanner = () => (
   <div className="sticky top-16 z-40 mt-16 border-y border-primary/30 bg-background/95 backdrop-blur-xl">
@@ -32,14 +32,18 @@ export const VitrineBanner = () => (
   </div>
 );
 
-export const VitrineWhatsAppFloat = () => (
-  <a
-    href={whatsAppLink(VITRINE_HELLO)}
-    target="_blank"
-    rel="noopener noreferrer"
-    className="fixed bottom-5 right-4 z-50 px-4 py-3 bg-accent text-accent-foreground font-display font-bold rounded-full inline-flex items-center gap-2 box-glow-green animate-pulse-glow"
-  >
-    <MessageCircle className="w-5 h-5" />
-    WhatsApp
-  </a>
-);
+export const VitrineWhatsAppFloat = () => {
+  const { isVitrine } = useSiteMode();
+
+  return (
+    <a
+      href={whatsAppLink(isVitrine ? VITRINE_HELLO : SHOP_HELLO)}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="fixed bottom-5 right-4 z-50 px-4 py-3 bg-accent text-accent-foreground font-display font-bold rounded-full inline-flex items-center gap-2 box-glow-green animate-pulse-glow"
+    >
+      <MessageCircle className="w-5 h-5" />
+      WhatsApp
+    </a>
+  );
+};
