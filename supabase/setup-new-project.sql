@@ -38,6 +38,9 @@ CREATE TABLE IF NOT EXISTS public.orders (
 ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS shipping_method TEXT;
 ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS shipping_cost NUMERIC;
 ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS shipping_deadline TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS payment_method TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS payment_id TEXT;
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS payment_status TEXT;
 
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 

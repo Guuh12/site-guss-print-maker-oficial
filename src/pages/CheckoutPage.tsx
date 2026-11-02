@@ -14,6 +14,15 @@ import {
   quoteShipping,
   type ShippingOption,
 } from "@/lib/shipping";
+import {
+  chargePayment,
+  isMissingPaymentColumn,
+  paymentMethodLabel,
+  paymentMethods,
+  type PaymentCharge,
+  type PaymentMethod,
+} from "@/lib/payment";
+import PaymentSandbox from "@/components/PaymentSandbox";
 
 const CheckoutPage = () => {
   const { user, loading: authLoading } = useAuth();
@@ -24,8 +33,11 @@ const CheckoutPage = () => {
   const [options, setOptions] = useState<ShippingOption[]>([]);
   const [selectedCode, setSelectedCode] = useState("");
   const [quoting, setQuoting] = useState(false);
+  const [method, setMethod] = useState<PaymentMethod | "">("");
   const [loading, setLoading] = useState(false);
+  const [sandboxPhase, setSandboxPhase] = useState<"connecting" | "approved">("connecting");
   const [success, setSuccess] = useState(false);
+  const [charge, setCharge] = useState<PaymentCharge | null>(null);
   const quoteRequest = useRef(0);
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -44,6 +56,10 @@ const CheckoutPage = () => {
       navigate("/carrinho");
     }
   }, [items, user, authLoading, navigate, success]);
+
+  useEffect(() => {
+    if (success) window.scrollTo(0, 0);
+  }, [success]);
 
   useEffect(() => {
     quoteRequest.current += 1;
@@ -76,8 +92,9 @@ const CheckoutPage = () => {
 
   const handleOrder = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user || !selected) return;
+    if (!user || !selected || !method) return;
     setLoading(true);
+    setSandboxPhase("connecting");
 
     const deliveryAddress = selected.pickup ? "Retirada com o Guss Print Maker" : address.trim();
     const order = {
@@ -90,16 +107,37 @@ const CheckoutPage = () => {
       })),
       total: grandTotal,
       address: deliveryAddress,
-      status: "pending" as const,
+      status: "in_production" as const,
     };
 
     try {
-      let { error } = await supabase.from("orders").insert({
-        ...order,
+      const paid = await chargePayment({
+        amount: grandTotal,
+        method,
+        description: items.map((item) => `${item.quantity}x ${item.name}`).join(", "),
+        payerEmail: user.email ?? "",
+      });
+      setCharge(paid);
+      setSandboxPhase("approved");
+      await new Promise((resolve) => setTimeout(resolve, 700));
+
+      const shipping = {
         shipping_method: selected.name,
         shipping_cost: selected.price,
         shipping_deadline: selected.deadlineLabel,
-      });
+      };
+      const payment = {
+        payment_method: paid.method,
+        payment_id: paid.paymentId,
+        payment_status: paid.status,
+      };
+
+      let { error } = await supabase.from("orders").insert({ ...order, ...shipping, ...payment });
+
+      if (error && isMissingPaymentColumn(error.message)) {
+        const retry = await supabase.from("orders").insert({ ...order, ...shipping });
+        error = retry.error;
+      }
 
       if (error && isMissingShippingColumn(error.message)) {
         const fallback = await supabase.from("orders").insert({
@@ -114,7 +152,7 @@ const CheckoutPage = () => {
       if (error) throw new Error(error.message);
       clearCart();
       setSuccess(true);
-      toast.success("Pedido realizado! 🚀", { description: "Acompanhe em Minha Conta." });
+      toast.success("Pagamento aprovado", { description: "Pedido registrado. Acompanhe em Minha Conta." });
     } catch (error: unknown) {
       const description = error instanceof Error ? error.message : "Não foi possível registrar o pedido.";
       toast.error("Erro", { description });
@@ -131,8 +169,14 @@ const CheckoutPage = () => {
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-24 h-24 rounded-full bg-accent/20 border-4 border-accent flex items-center justify-center mb-6">
             <Check className="w-12 h-12 text-accent" />
           </motion.div>
-          <h1 className="font-pixel text-sm text-accent text-glow-green mb-2">PEDIDO CONFIRMADO!</h1>
-          <p className="font-body text-muted-foreground mb-6">Seu pedido foi registrado com sucesso.</p>
+          <h1 className="font-pixel text-sm text-accent text-glow-green mb-2">PAGAMENTO APROVADO!</h1>
+          <p className="font-body text-muted-foreground text-center max-w-md mb-2">
+            O teste local do Mercado Pago devolveu sucesso
+            {charge ? ` em ${paymentMethodLabel(charge.method)}` : ""}. O pedido entrou em produção.
+          </p>
+          {charge && (
+            <p className="font-body text-xs text-muted-foreground mb-6">Código da cobrança: {charge.paymentId}</p>
+          )}
           <div className="flex flex-col sm:flex-row gap-4 px-6 w-full max-w-md">
             <button onClick={() => navigate("/minha-conta")} className="flex-1 px-6 py-3 bg-primary text-primary-foreground font-display font-bold rounded-lg text-center">Meus Pedidos</button>
             <button onClick={() => navigate("/produtos")} className="flex-1 px-6 py-3 bg-muted text-foreground font-display font-bold rounded-lg border border-border text-center">Continuar Comprando</button>
@@ -245,19 +289,47 @@ const CheckoutPage = () => {
 
               <div className="pt-2">
                 <h2 className="font-pixel text-[10px] text-primary mb-3 flex items-center gap-2"><CreditCard className="w-4 h-4" /> PAGAMENTO</h2>
-                <p className="font-pixel text-[8px] text-muted-foreground mb-4">* Integração de pagamento em breve. O pedido será registrado como pendente.</p>
+                <div className="space-y-2">
+                  {paymentMethods.map((option) => {
+                    const active = option.code === method;
+                    return (
+                      <button
+                        key={option.code}
+                        type="button"
+                        onClick={() => setMethod(option.code)}
+                        className={`w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl border text-left transition-colors ${
+                          active ? "border-primary bg-primary/10" : "border-border bg-muted hover:border-primary/40"
+                        }`}
+                      >
+                        <span>
+                          <span className="block font-display font-bold text-sm text-foreground">{option.name}</span>
+                          <span className="block font-body text-xs text-muted-foreground">{option.detail}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="font-pixel text-[8px] text-muted-foreground mt-3">
+                  * Teste local. A API do Mercado Pago está no código, comentada até a conta.
+                </p>
               </div>
 
               <button
                 type="submit"
-                disabled={loading || !selected}
+                disabled={loading || !selected || !method}
                 className="w-full py-4 bg-accent text-accent-foreground font-display font-bold text-lg rounded-xl box-glow-green hover:shadow-lg transition-all disabled:opacity-50"
               >
-                {loading ? "Processando..." : "Confirmar Pedido 🚀"}
+                {loading ? "Processando..." : `Pagar ${formatBRL(grandTotal)}`}
               </button>
             </form>
           </div>
         </div>
+        <PaymentSandbox
+          open={loading}
+          phase={sandboxPhase}
+          amount={grandTotal}
+          methodName={paymentMethodLabel(method)}
+        />
       </div>
   );
 };

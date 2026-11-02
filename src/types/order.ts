@@ -16,6 +16,9 @@ export interface Order {
   shipping_method: string | null;
   shipping_cost: number | null;
   shipping_deadline: string | null;
+  payment_method: string | null;
+  payment_id: string | null;
+  payment_status: string | null;
   created_at: string;
 }
 
@@ -26,7 +29,12 @@ type OrderRow = Pick<
   Partial<
     Pick<
       Database["public"]["Tables"]["orders"]["Row"],
-      "shipping_method" | "shipping_cost" | "shipping_deadline"
+      | "shipping_method"
+      | "shipping_cost"
+      | "shipping_deadline"
+      | "payment_method"
+      | "payment_id"
+      | "payment_status"
     >
   >;
 
@@ -49,6 +57,9 @@ export function asOrder(row: OrderRow | null): Order | null {
     shipping_method: row.shipping_method ?? null,
     shipping_cost: row.shipping_cost ?? null,
     shipping_deadline: row.shipping_deadline ?? null,
+    payment_method: row.payment_method ?? null,
+    payment_id: row.payment_id ?? null,
+    payment_status: row.payment_status ?? null,
     created_at: row.created_at,
   };
 }

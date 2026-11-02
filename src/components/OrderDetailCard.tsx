@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock, ChevronDown, ChevronUp, MapPin, XCircle, Package, Hash, CreditCard, Truck } from "lucide-react";
 import { formatBRL } from "@/lib/utils";
+import { paymentMethodLabel } from "@/lib/payment";
 import { canCancelOrder, orderItems, type Order } from "@/types/order";
 
 const statusLabels: Record<string, { label: string; color: string }> = {
@@ -22,10 +23,17 @@ const progressSteps = [
   { key: "completed", label: "Entregue" },
 ];
 
-const paymentNote = (status: string) => {
-  if (status === "cancelled") return "Pedido cancelado. Nenhum valor foi cobrado por aqui.";
-  if (status === "pending") return "Pagamento ainda não confirmado. A cobrança entra quando o meio de pagamento estiver ativo.";
-  return "Pedido seguido na produção. O comprovante de pagamento aparece aqui quando a cobrança estiver ligada.";
+const paymentNote = (order: Order) => {
+  if (order.status === "cancelled") return "Pedido cancelado. Nenhum valor foi cobrado por aqui.";
+  if (order.payment_status === "approved") {
+    const simulated = order.payment_id?.startsWith("SIM-");
+    const method = paymentMethodLabel(order.payment_method);
+    return simulated
+      ? `Aprovado no teste local do Mercado Pago (${method}). Código ${order.payment_id}.`
+      : `Pago com ${method}. Código ${order.payment_id}.`;
+  }
+  if (order.status === "pending") return "Pagamento ainda não confirmado. A cobrança entra quando o Mercado Pago estiver ativo.";
+  return "Pedido seguido na produção. O comprovante aparece aqui quando a cobrança estiver gravada no pedido.";
 };
 
 interface Props {
@@ -120,7 +128,7 @@ const OrderDetailCard = ({ order, index }: Props) => {
                   <CreditCard className="w-3.5 h-3.5" /> PAGAMENTO
                 </h3>
                 <p className="font-body text-sm text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
-                  {paymentNote(order.status)}
+                  {paymentNote(order)}
                 </p>
               </div>
 
