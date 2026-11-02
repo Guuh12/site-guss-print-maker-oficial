@@ -1,8 +1,20 @@
 import { Link } from "react-router-dom";
-import { Instagram, Mail, Phone, MessageCircle } from "lucide-react";
+import { Instagram, Mail, MessageCircle } from "lucide-react";
 import logo from "@/assets/logo-pixel.png";
+import { useSiteMode } from "@/vitrine/siteMode";
+import { whatsAppLink, VITRINE_HELLO } from "@/vitrine/whatsapp";
 
-const Footer = () => (
+const Footer = () => {
+  const { path, isVitrine } = useSiteMode();
+  const links = [
+    { to: path("/"), label: "Home" },
+    { to: path("/produtos"), label: "Produtos" },
+    { to: path("/projeto-personalizado"), label: "Projeto 3D" },
+    { to: path("/contato"), label: "Contato" },
+    { to: "/", label: "Trocar versão" },
+  ];
+
+  return (
   <footer className="relative z-10 bg-card border-t border-border py-12">
     <div className="container mx-auto px-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -24,13 +36,8 @@ const Footer = () => (
         <div>
           <h3 className="font-display font-bold text-foreground mb-4">Links</h3>
           <div className="flex flex-col gap-2">
-            {[
-              { to: "/", label: "Home" },
-              { to: "/produtos", label: "Produtos" },
-              { to: "/projeto-personalizado", label: "Projeto 3D" },
-              { to: "/contato", label: "Contato" },
-            ].map((link) => (
-              <Link key={link.to} to={link.to} className="font-body text-muted-foreground hover:text-primary transition-colors">
+            {links.map((link) => (
+              <Link key={link.label} to={link.to} className="font-body text-muted-foreground hover:text-primary transition-colors">
                 {link.label}
               </Link>
             ))}
@@ -40,7 +47,7 @@ const Footer = () => (
         <div>
           <h3 className="font-display font-bold text-foreground mb-4">Contato</h3>
           <div className="flex flex-col gap-3">
-            <a href="https://wa.me/5511966451672" target="_blank" rel="noopener" className="flex items-center gap-2 font-body text-muted-foreground hover:text-accent transition-colors">
+            <a href={whatsAppLink(isVitrine ? VITRINE_HELLO : "Olá! Vim pelo site da Guss Print Maker.")} target="_blank" rel="noopener" className="flex items-center gap-2 font-body text-muted-foreground hover:text-accent transition-colors">
               <MessageCircle className="w-4 h-4" /> WhatsApp
             </a>
             <a href="https://instagram.com/guss_print_maker" target="_blank" rel="noopener" className="flex items-center gap-2 font-body text-muted-foreground hover:text-secondary transition-colors">
@@ -60,6 +67,7 @@ const Footer = () => (
       </div>
     </div>
   </footer>
-);
+  );
+};
 
 export default Footer;

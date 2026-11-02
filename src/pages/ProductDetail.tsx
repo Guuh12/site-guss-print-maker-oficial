@@ -7,11 +7,14 @@ import { useCart } from "@/contexts/CartContext";
 import { formatBRL } from "@/lib/utils";
 import PersonalizedContactDialog from "@/components/PersonalizedContactDialog";
 import ProductOptionsDialog from "@/components/ProductOptionsDialog";
+import { useSiteMode } from "@/vitrine/siteMode";
+import ShowcaseAction from "@/vitrine/ShowcaseAction";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const product = products.find((p) => p.id === id);
   const { addItem } = useCart();
+  const { isVitrine, path } = useSiteMode();
 
   if (!product) {
     return (
@@ -29,9 +32,9 @@ const ProductDetail = () => {
   ];
 
   return (
-    <div className="pt-24 pb-16">
+    <div className={isVitrine ? "pt-6 pb-24" : "pt-24 pb-16"}>
         <div className="container mx-auto px-4">
-          <Link to="/produtos" className="inline-flex items-center gap-2 font-body text-muted-foreground hover:text-primary mb-6">
+          <Link to={path("/produtos")} className="inline-flex items-center gap-2 font-body text-muted-foreground hover:text-primary mb-6">
             <ArrowLeft className="w-4 h-4" /> Voltar
           </Link>
 
@@ -70,15 +73,28 @@ const ProductDetail = () => {
                 ))}
               </div>
 
-              <div className="flex gap-3 mt-8">
-                {product.category === "Personalizados" ? (
+              <div className="mt-8">
+                {isVitrine ? (
+                  <div className="space-y-3">
+                    <p className="font-body text-muted-foreground">
+                      Esta página é só para olhar a peça. Para pedir, cores e prazo, a conversa segue no WhatsApp.
+                    </p>
+                    <ShowcaseAction
+                      productName={product.name}
+                      className="w-full py-3 bg-accent text-accent-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 box-glow-green"
+                    />
+                  </div>
+                ) : product.category === "Personalizados" ? (
+                  <div className="flex gap-3">
                   <PersonalizedContactDialog
                     productId={product.id}
                     productName={product.name}
                     triggerLabel="Entre em contato"
                     triggerClassName="flex-1 py-3 bg-secondary text-secondary-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2"
                   />
+                  </div>
                 ) : product.purchaseOptions ? (
+                  <div className="flex gap-3">
                   <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <motion.button
                       whileHover={{ scale: 1.02 }}
@@ -104,7 +120,9 @@ const ProductDetail = () => {
                       triggerClassName="py-3 bg-muted text-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 border border-border hover:bg-border transition-colors"
                     />
                   </div>
+                  </div>
                 ) : (
+                  <div className="flex gap-3">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
@@ -113,6 +131,7 @@ const ProductDetail = () => {
                   >
                     <ShoppingCart className="w-5 h-5" /> Adicionar ao Carrinho
                   </motion.button>
+                  </div>
                 )}
               </div>
             </motion.div>

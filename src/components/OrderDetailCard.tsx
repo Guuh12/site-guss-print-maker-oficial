@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, ChevronDown, ChevronUp, MapPin, XCircle, Package, Hash, CreditCard } from "lucide-react";
+import { Clock, ChevronDown, ChevronUp, MapPin, XCircle, Package, Hash, CreditCard, Truck } from "lucide-react";
 import { formatBRL } from "@/lib/utils";
 import { canCancelOrder, orderItems, type Order } from "@/types/order";
 
@@ -160,6 +160,19 @@ const OrderDetailCard = ({ order, index }: Props) => {
                   {order.id}
                 </p>
               </div>
+
+              {order.shipping_method && (
+                <div>
+                  <h3 className="font-pixel text-[8px] text-primary mb-2 flex items-center gap-2">
+                    <Truck className="w-3.5 h-3.5" /> ENTREGA
+                  </h3>
+                  <p className="font-body text-sm text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
+                    {order.shipping_method}
+                    {order.shipping_cost != null && ` — ${order.shipping_cost === 0 ? "Grátis" : formatBRL(order.shipping_cost)}`}
+                    {order.shipping_deadline && ` — ${order.shipping_deadline}`}
+                  </p>
+                </div>
+              )}
 
               {order.address && (
                 <div>

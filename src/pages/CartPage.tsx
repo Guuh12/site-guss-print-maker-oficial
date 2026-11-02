@@ -58,10 +58,11 @@ const CartPage = () => {
           </div>
 
           <div className="mt-8 bg-card rounded-xl border border-border p-6">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-1">
               <span className="font-display text-lg text-foreground">Total</span>
               <span className="font-display text-3xl font-bold text-primary">{formatBRL(total)}</span>
             </div>
+            <p className="font-body text-xs text-muted-foreground mb-4">O frete entra no checkout, depois do CEP.</p>
             <Link to="/checkout">
               <button className="w-full py-3 bg-accent text-accent-foreground font-display font-bold text-lg rounded-lg box-glow-green hover:shadow-lg transition-all">
                 Finalizar Compra 🚀

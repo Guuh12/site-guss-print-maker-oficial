@@ -151,7 +151,7 @@ const AccountProfile = () => {
           </button>
           <button
             type="button"
-            onClick={() => { signOut(); navigate("/"); }}
+            onClick={() => { signOut(); navigate("/loja"); }}
             className="px-4 py-2 bg-destructive/10 text-destructive rounded-lg font-display font-bold text-sm hover:bg-destructive/20 transition-colors flex items-center gap-2"
           >
             <LogOut className="w-4 h-4" /> Sair

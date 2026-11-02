@@ -28,7 +28,7 @@ const OrderCancelledPage = () => {
     const load = async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("id, products, total, status, address, created_at")
+        .select("*")
         .eq("id", id)
         .maybeSingle();
 
@@ -147,6 +147,13 @@ const OrderCancelledPage = () => {
                   {formatBRL(order.total)}
                 </span>
               </div>
+              {order.shipping_method && (
+                <p className="font-body text-xs text-muted-foreground mt-3">
+                  Frete: {order.shipping_method}
+                  {order.shipping_cost != null && ` — ${order.shipping_cost === 0 ? "Grátis" : formatBRL(order.shipping_cost)}`}
+                  {order.shipping_deadline && ` — ${order.shipping_deadline}`}
+                </p>
+              )}
               {order.address && (
                 <p className="font-body text-xs text-muted-foreground mt-3">Entrega: {order.address}</p>
               )}

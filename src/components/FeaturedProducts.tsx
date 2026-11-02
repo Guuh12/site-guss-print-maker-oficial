@@ -7,9 +7,12 @@ import { Link } from "react-router-dom";
 import PersonalizedContactDialog from "@/components/PersonalizedContactDialog";
 import ProductOptionsDialog from "@/components/ProductOptionsDialog";
 import { formatBRL } from "@/lib/utils";
+import { useSiteMode } from "@/vitrine/siteMode";
+import ShowcaseAction from "@/vitrine/ShowcaseAction";
 
 const ProductCard = ({ product }: { product: typeof products[0] }) => {
   const { addItem } = useCart();
+  const { isVitrine, path } = useSiteMode();
   const [coinAnim, setCoinAnim] = useState(false);
 
   const handleAdd = () => {
@@ -27,7 +30,7 @@ const ProductCard = ({ product }: { product: typeof products[0] }) => {
       transition={{ duration: 0.3 }}
       className="relative bg-card rounded-xl border border-border overflow-hidden group"
     >
-      <Link to={`/produto/${product.id}`}>
+      <Link to={path(`/produto/${product.id}`)}>
         <div className="relative overflow-hidden aspect-square">
           <img
             src={product.image}
@@ -48,7 +51,12 @@ const ProductCard = ({ product }: { product: typeof products[0] }) => {
         </p>
 
         <div className="relative">
-          {product.category === "Personalizados" ? (
+          {isVitrine ? (
+            <ShowcaseAction
+              productName={product.name}
+              className="mt-3 w-full py-2.5 bg-accent text-accent-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-accent/30"
+            />
+          ) : product.category === "Personalizados" ? (
             <PersonalizedContactDialog
               productId={product.id}
               productName={product.name}
@@ -110,6 +118,7 @@ const ProductCard = ({ product }: { product: typeof products[0] }) => {
 };
 
 const FeaturedProducts = () => {
+  const { path } = useSiteMode();
   const featuredProducts = products.slice(0, 6);
 
   return (
@@ -136,7 +145,7 @@ const FeaturedProducts = () => {
         </div>
 
         <div className="text-center mt-10">
-          <Link to="/produtos">
+          <Link to={path("/produtos")}>
             <motion.button
               whileHover={{ scale: 1.05 }}
               className="px-8 py-3 border-glow-cyan text-primary font-display font-bold rounded-lg"

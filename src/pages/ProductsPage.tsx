@@ -7,6 +7,8 @@ import { useCart } from "@/contexts/CartContext";
 import { formatBRL } from "@/lib/utils";
 import PersonalizedContactDialog from "@/components/PersonalizedContactDialog";
 import ProductOptionsDialog from "@/components/ProductOptionsDialog";
+import { useSiteMode } from "@/vitrine/siteMode";
+import ShowcaseAction from "@/vitrine/ShowcaseAction";
 
 const categories = ["Todos", "Cuidados Pessoais", "Bonecos", "Personalizados", "Utilidades", "Outros"];
 
@@ -14,6 +16,7 @@ const ProductsPage = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Todos");
   const { addItem } = useCart();
+  const { isVitrine, path } = useSiteMode();
 
   const filtered = products.filter((p) => {
     const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
@@ -22,7 +25,7 @@ const ProductsPage = () => {
   });
 
   return (
-      <div className="pt-24 pb-16">
+      <div className={isVitrine ? "pt-6 pb-24" : "pt-24 pb-16"}>
         <div className="container mx-auto px-4">
           <h1 className="font-pixel text-xl text-primary text-glow-cyan text-center mb-8">🛍 PRODUTOS</h1>
 
@@ -64,7 +67,7 @@ const ProductsPage = () => {
                 whileHover={{ y: -5 }}
                 className="bg-card rounded-xl border border-border overflow-hidden group"
               >
-                <Link to={`/produto/${product.id}`}>
+                <Link to={path(`/produto/${product.id}`)}>
                   <div className="aspect-square overflow-hidden">
                     <img src={product.image} alt={product.name} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                   </div>
@@ -75,7 +78,12 @@ const ProductsPage = () => {
                   <p className="font-display text-2xl font-bold text-primary mt-2">
                     {product.priceLabel || formatBRL(product.price)}
                   </p>
-                  {product.category === "Personalizados" ? (
+                  {isVitrine ? (
+                    <ShowcaseAction
+                      productName={product.name}
+                      className="mt-3 w-full py-2.5 bg-accent text-accent-foreground font-display font-bold rounded-lg flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-accent/30 transition-all"
+                    />
+                  ) : product.category === "Personalizados" ? (
                     <PersonalizedContactDialog
                       productId={product.id}
                       productName={product.name}

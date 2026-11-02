@@ -7,6 +7,10 @@ import SiteLayout from "@/components/SiteLayout";
 import Index from "./pages/Index";
 import ScrollToTop from "./components/ScrollToTop";
 import NotFound from "./pages/NotFound";
+import ModeSelectPage from "@/vitrine/ModeSelectPage";
+import VitrineContactPage from "@/vitrine/VitrineContactPage";
+import VitrineProjectPage from "@/vitrine/VitrineProjectPage";
+import { SiteModeProvider } from "@/vitrine/siteMode";
 
 const ProductsPage = lazy(() => import("./pages/ProductsPage"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
@@ -19,6 +23,18 @@ const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const MyAccountPage = lazy(() => import("./pages/MyAccountPage"));
 const OrderCancelledPage = lazy(() => import("./pages/OrderCancelledPage"));
 
+const LojaLayout = () => (
+  <SiteModeProvider mode="loja">
+    <SiteLayout />
+  </SiteModeProvider>
+);
+
+const VitrineLayout = () => (
+  <SiteModeProvider mode="vitrine">
+    <SiteLayout />
+  </SiteModeProvider>
+);
+
 const App = () => (
   <AuthProvider>
     <CartProvider>
@@ -26,8 +42,10 @@ const App = () => (
       <BrowserRouter>
         <ScrollToTop />
         <Routes>
-          <Route element={<SiteLayout />}>
-            <Route path="/" element={<Index />} />
+          <Route path="/" element={<ModeSelectPage />} />
+
+          <Route element={<LojaLayout />}>
+            <Route path="/loja" element={<Index />} />
             <Route path="/produtos" element={<ProductsPage />} />
             <Route path="/produto/:id" element={<ProductDetail />} />
             <Route path="/carrinho" element={<CartPage />} />
@@ -39,6 +57,15 @@ const App = () => (
             <Route path="/minha-conta" element={<MyAccountPage />} />
             <Route path="/pedido/:id/cancelar" element={<OrderCancelledPage />} />
           </Route>
+
+          <Route path="/vitrine" element={<VitrineLayout />}>
+            <Route index element={<Index />} />
+            <Route path="produtos" element={<ProductsPage />} />
+            <Route path="produto/:id" element={<ProductDetail />} />
+            <Route path="projeto-personalizado" element={<VitrineProjectPage />} />
+            <Route path="contato" element={<VitrineContactPage />} />
+          </Route>
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

@@ -104,6 +104,9 @@ export type Database = {
           created_at: string
           id: string
           products: Json
+          shipping_cost: number | null
+          shipping_deadline: string | null
+          shipping_method: string | null
           status: Database["public"]["Enums"]["order_status"]
           total: number
           updated_at: string
@@ -114,6 +117,9 @@ export type Database = {
           created_at?: string
           id?: string
           products: Json
+          shipping_cost?: number | null
+          shipping_deadline?: string | null
+          shipping_method?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           total: number
           updated_at?: string
@@ -124,6 +130,9 @@ export type Database = {
           created_at?: string
           id?: string
           products?: Json
+          shipping_cost?: number | null
+          shipping_deadline?: string | null
+          shipping_method?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           total?: number
           updated_at?: string

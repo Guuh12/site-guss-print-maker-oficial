@@ -3,10 +3,13 @@ import { Link } from "react-router-dom";
 import { Rocket, Sparkles } from "lucide-react";
 import NeonPortal from "@/components/NeonPortal";
 import heroBg from "@/assets/hero-bg.jpg";
+import { useSiteMode } from "@/vitrine/siteMode";
 
 const HeroSection = () => {
+  const { isVitrine, path } = useSiteMode();
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <section className={`relative min-h-screen flex items-center justify-center overflow-hidden ${isVitrine ? "pt-8" : "pt-20"}`}>
       <div
         className="absolute inset-0 bg-cover bg-center opacity-40"
         style={{ backgroundImage: `url(${heroBg})` }}
@@ -36,7 +39,7 @@ const HeroSection = () => {
           </motion.p>
 
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-            <Link to="/produtos" className="w-full sm:w-auto">
+            <Link to={path("/produtos")} className="w-full sm:w-auto">
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0 0 30px hsl(140 100% 50% / 0.4)" }}
                 whileTap={{ scale: 0.95 }}
@@ -47,7 +50,7 @@ const HeroSection = () => {
               </motion.button>
             </Link>
 
-            <Link to="/projeto-personalizado" className="w-full sm:w-auto">
+            <Link to={path("/projeto-personalizado")} className="w-full sm:w-auto">
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: "0 0 30px hsl(270 80% 60% / 0.4)" }}
                 whileTap={{ scale: 0.95 }}
@@ -58,6 +61,12 @@ const HeroSection = () => {
               </motion.button>
             </Link>
           </div>
+
+          {isVitrine && (
+            <p className="font-body text-lg text-muted-foreground mt-6 max-w-xl">
+              Nesta versão você só olha. Se alguma peça fizer sentido, o botão de WhatsApp abre a conversa com a gente.
+            </p>
+          )}
         </motion.div>
       </div>
     </section>

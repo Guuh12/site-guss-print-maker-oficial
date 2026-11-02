@@ -14,7 +14,7 @@ export function rememberPostLoginPath(path: string) {
   sessionStorage.setItem(POST_LOGIN_PATH_KEY, safeInternalPath(path));
 }
 
-export function consumePostLoginPath(fallback = "/"): string {
+export function consumePostLoginPath(fallback = "/loja"): string {
   const stored = sessionStorage.getItem(POST_LOGIN_PATH_KEY);
   if (!stored) return safeInternalPath(fallback);
   sessionStorage.removeItem(POST_LOGIN_PATH_KEY);

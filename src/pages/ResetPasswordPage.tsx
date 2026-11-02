@@ -43,7 +43,7 @@ const ResetPasswordPage = () => {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
       toast.success("Senha atualizada! 🚀", { description: "Você já pode fazer login." });
-      navigate("/");
+      navigate("/loja");
     } catch (error: unknown) {
       const description = error instanceof Error ? error.message : "Não foi possível atualizar a senha.";
       toast.error("Erro", { description });

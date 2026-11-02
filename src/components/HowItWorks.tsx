@@ -1,14 +1,26 @@
 import { motion } from "framer-motion";
 import { Lightbulb, Cpu, Printer, Truck } from "lucide-react";
+import { useSiteMode } from "@/vitrine/siteMode";
 
-const steps = [
+const shopSteps = [
   { icon: Lightbulb, title: "Escolha ou Envie", desc: "Você escolhe um produto ou envia sua ideia", color: "text-primary" },
   { icon: Cpu, title: "Modelagem", desc: "Modelamos ou ajustamos seu arquivo 3D", color: "text-secondary" },
   { icon: Printer, title: "Impressão", desc: "Impressão 3D de alta qualidade", color: "text-accent" },
   { icon: Truck, title: "Envio", desc: "Enviamos para sua casa com segurança", color: "text-neon-pink" },
 ];
 
-const HowItWorks = () => (
+const vitrineSteps = [
+  { icon: Lightbulb, title: "Olhe a vitrine", desc: "Você escolhe uma peça ou manda a ideia no WhatsApp", color: "text-primary" },
+  { icon: Cpu, title: "Modelagem", desc: "A gente combina o modelo com você na conversa", color: "text-secondary" },
+  { icon: Printer, title: "Impressão", desc: "Impressão 3D de alta qualidade", color: "text-accent" },
+  { icon: Truck, title: "Envio", desc: "A entrega é combinada direto com você", color: "text-neon-pink" },
+];
+
+const HowItWorks = () => {
+  const { isVitrine } = useSiteMode();
+  const steps = isVitrine ? vitrineSteps : shopSteps;
+
+  return (
   <section className="py-20 relative z-10">
     <div className="container mx-auto px-4">
       <motion.h2
@@ -44,6 +56,7 @@ const HowItWorks = () => (
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default HowItWorks;

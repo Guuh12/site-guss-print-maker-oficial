@@ -27,7 +27,7 @@ const AuthPage = () => {
     const fromQuery = redirectParam && redirectParam.startsWith("/") && !redirectParam.startsWith("//")
       ? redirectParam
       : null;
-    redirectToRef.current = fromQuery || peekPostLoginPath() || "/";
+    redirectToRef.current = fromQuery || peekPostLoginPath() || "/loja";
   }
   const redirectTo = redirectToRef.current;
 
