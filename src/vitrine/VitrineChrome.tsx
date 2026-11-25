@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { MessageCircle, ShoppingBag } from "lucide-react";
 import { useSiteMode, VERSIONS_HOME } from "@/vitrine/siteMode";
 import { SHOP_HELLO, VITRINE_HELLO, whatsAppLink } from "@/vitrine/whatsapp";
+import whatsIcon from "@/assets/whats-icon.png";
 
 export const VitrineBanner = () => (
   <div className="sticky top-16 z-40 mt-16 border-y border-primary/30 bg-background/95 backdrop-blur-xl">
@@ -40,10 +41,10 @@ export const VitrineWhatsAppFloat = () => {
       href={whatsAppLink(isVitrine ? VITRINE_HELLO : SHOP_HELLO)}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-5 right-4 z-50 px-4 py-3 bg-accent text-accent-foreground font-display font-bold rounded-full inline-flex items-center gap-2 box-glow-green animate-pulse-glow"
+      aria-label="WhatsApp"
+      className="fixed bottom-5 left-4 z-50 h-16 w-16 overflow-hidden rounded-full box-glow-green animate-pulse-glow"
     >
-      <MessageCircle className="w-5 h-5" />
-      WhatsApp
+      <img src={whatsIcon} alt="" className="h-full w-full object-cover" />
     </a>
   );
 };
