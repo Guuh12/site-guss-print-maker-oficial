@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { Toaster } from "@/components/ui/sonner";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import SiteLayout from "@/components/SiteLayout";
@@ -10,7 +10,7 @@ import NotFound from "./pages/NotFound";
 import ModeSelectPage from "@/vitrine/ModeSelectPage";
 import VitrineContactPage from "@/vitrine/VitrineContactPage";
 import VitrineProjectPage from "@/vitrine/VitrineProjectPage";
-import { SiteModeProvider } from "@/vitrine/siteMode";
+import { SiteModeProvider, VERSIONS_HOME } from "@/vitrine/siteMode";
 
 const ProductsPage = lazy(() => import("./pages/ProductsPage"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
@@ -42,7 +42,8 @@ const App = () => (
       <BrowserRouter>
         <ScrollToTop />
         <Routes>
-          <Route path="/" element={<ModeSelectPage />} />
+          <Route path="/" element={<Navigate to="/vitrine" replace />} />
+          <Route path={VERSIONS_HOME} element={<ModeSelectPage />} />
 
           <Route element={<LojaLayout />}>
             <Route path="/loja" element={<Index />} />

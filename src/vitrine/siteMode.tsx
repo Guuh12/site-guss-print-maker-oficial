@@ -4,6 +4,7 @@ export type SiteMode = "loja" | "vitrine";
 
 export const SHOP_HOME = "/loja";
 export const VITRINE_HOME = "/vitrine";
+export const VERSIONS_HOME = "/versoes";
 
 type SiteModeValue = {
   mode: SiteMode;

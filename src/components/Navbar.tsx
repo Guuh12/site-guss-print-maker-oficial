@@ -5,7 +5,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "@/assets/logo-pixel.png";
-import { useSiteMode } from "@/vitrine/siteMode";
+import { useSiteMode, VERSIONS_HOME } from "@/vitrine/siteMode";
 import { VITRINE_HELLO, whatsAppLink } from "@/vitrine/whatsapp";
 
 const Navbar = () => {
@@ -67,7 +67,7 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link to="/" className="hidden lg:inline font-body font-semibold text-sm text-muted-foreground hover:text-primary transition-colors">
+          <Link to={VERSIONS_HOME} className="hidden lg:inline font-body font-semibold text-sm text-muted-foreground hover:text-primary transition-colors">
             Trocar versão
           </Link>
 
@@ -189,7 +189,7 @@ const Navbar = () => {
               ) : (
                 <Link to="/auth" onClick={() => setMobileOpen(false)} className="font-body text-lg font-semibold text-primary py-2">Entrar</Link>
               )}
-              <Link to="/" onClick={() => setMobileOpen(false)} className="font-body text-lg font-semibold text-muted-foreground hover:text-primary py-2">Trocar versão</Link>
+              <Link to={VERSIONS_HOME} onClick={() => setMobileOpen(false)} className="font-body text-lg font-semibold text-muted-foreground hover:text-primary py-2">Trocar versão</Link>
             </div>
           </motion.div>
         )}

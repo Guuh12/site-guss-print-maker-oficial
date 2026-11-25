@@ -1,17 +1,18 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Eye, MessageCircle, ShoppingBag, Sparkles, UserRound } from "lucide-react";
+import { ArrowRight, Construction, Eye, MessageCircle, ShoppingBag, Sparkles } from "lucide-react";
 import StarField from "@/components/StarField";
 import NeonPortal from "@/components/NeonPortal";
-import { SHOP_HOME, VITRINE_HOME } from "@/vitrine/siteMode";
+import { VITRINE_HOME } from "@/vitrine/siteMode";
 
 const doors = [
   {
     to: VITRINE_HOME,
-    kicker: "Só para olhar",
+    open: true,
+    kicker: "Mostruário aberto",
     title: "Vitrine",
     description:
-      "O mesmo visual de hoje, em modo mostruário. Você passeia pelos produtos, vê fotos, preços e como cada peça é feita. Não tem carrinho nem cadastro.",
+      "Esta é a entrada do site. Você passeia pelos produtos, vê fotos, preços e como cada peça é feita. O pedido segue pelo WhatsApp.",
     points: [
       { icon: Eye, text: "Ver o catálogo com calma" },
       { icon: Sparkles, text: "Entender materiais, tamanhos e prazos" },
@@ -21,17 +22,18 @@ const doors = [
     accent: "primary" as const,
   },
   {
-    to: SHOP_HOME,
-    kicker: "Para comprar online",
+    to: "",
+    open: false,
+    kicker: "Em manutenção",
     title: "Loja",
     description:
-      "O site de compra que já existe hoje. Você monta o carrinho, cria uma conta e finaliza o pedido por aqui, com checkout e área do cliente.",
+      "O site de compras está em manutenção. Carrinho, conta e checkout ficam fora do ar enquanto a loja está em construção.",
     points: [
-      { icon: ShoppingBag, text: "Adicionar produtos ao carrinho" },
-      { icon: UserRound, text: "Entrar na conta e acompanhar pedidos" },
-      { icon: Sparkles, text: "Pedir um projeto 3D pelo formulário" },
+      { icon: Construction, text: "Em construção no momento" },
+      { icon: ShoppingBag, text: "Compras pelo site voltam depois da manutenção" },
+      { icon: MessageCircle, text: "Enquanto isso, o pedido é pelo mostruário" },
     ],
-    action: "Entrar na loja",
+    action: "Em construção no momento",
     accent: "accent" as const,
   },
 ];
@@ -67,7 +69,7 @@ const ModeSelectPage = () => (
         transition={{ delay: 0.25 }}
         className="font-display font-bold text-3xl md:text-5xl text-foreground text-center max-w-3xl"
       >
-        Duas portas. Escolha a sua.
+        O mostruário está aberto.
       </motion.h1>
 
       <motion.p
@@ -76,27 +78,20 @@ const ModeSelectPage = () => (
         transition={{ delay: 0.4 }}
         className="font-body text-lg md:text-xl text-muted-foreground text-center max-w-2xl mt-4 mb-10"
       >
-        Antes de abrir o site, diga como quer entrar. A vitrine é para conhecer as peças. A loja é para comprar. Elas ficam separadas, e dá para trocar depois.
+        A entrada do site é a vitrine. O site de compras está em manutenção no momento e aparece aqui só para mostrar que está em construção.
       </motion.p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full max-w-5xl">
         {doors.map((door, index) => {
           const isShop = door.accent === "accent";
-          return (
-            <motion.div
-              key={door.to}
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45 + index * 0.12, duration: 0.45 }}
-            >
-              <Link to={door.to} className="block h-full group focus:outline-none">
+          const card = (
                 <motion.article
-                  whileHover={{ y: -8 }}
-                  whileTap={{ scale: 0.985 }}
+                  whileHover={door.open ? { y: -8 } : undefined}
+                  whileTap={door.open ? { scale: 0.985 } : undefined}
                   className={`h-full rounded-2xl border bg-card/80 backdrop-blur-md p-6 md:p-7 flex flex-col transition-shadow ${
-                    isShop
-                      ? "border-accent/40 hover:box-glow-green"
-                      : "border-primary/40 hover:box-glow-cyan"
+                    door.open
+                      ? "border-primary/40 hover:box-glow-cyan"
+                      : "border-border opacity-80"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3 mb-5">
@@ -130,16 +125,33 @@ const ModeSelectPage = () => (
 
                   <div
                     className={`mt-7 inline-flex items-center justify-center gap-2 w-full py-3 rounded-lg font-display font-bold ${
-                      isShop
-                        ? "bg-accent text-accent-foreground box-glow-green"
-                        : "bg-primary text-primary-foreground box-glow-cyan"
+                      door.open
+                        ? "bg-primary text-primary-foreground box-glow-cyan"
+                        : "bg-muted text-muted-foreground border border-border"
                     }`}
                   >
                     {door.action}
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    {door.open && <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />}
                   </div>
                 </motion.article>
-              </Link>
+          );
+
+          return (
+            <motion.div
+              key={door.title}
+              initial={{ opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45 + index * 0.12, duration: 0.45 }}
+            >
+              {door.open ? (
+                <Link to={door.to} className="block h-full group focus:outline-none">
+                  {card}
+                </Link>
+              ) : (
+                <div className="block h-full" aria-disabled="true">
+                  {card}
+                </div>
+              )}
             </motion.div>
           );
         })}
@@ -151,7 +163,7 @@ const ModeSelectPage = () => (
         transition={{ delay: 0.8 }}
         className="font-body text-muted-foreground text-center mt-8 max-w-xl"
       >
-        Isso fica assim por enquanto, até o site completo ficar pronto. Dentro de cada versão tem o caminho para voltar aqui e escolher de novo.
+        O mostruário é a tela principal. Esta página das duas versões só abre pelo botão Trocar versão. A loja continua em construção.
       </motion.p>
     </div>
   </div>

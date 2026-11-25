@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { MessageCircle, ShoppingBag } from "lucide-react";
-import { SHOP_HOME, useSiteMode } from "@/vitrine/siteMode";
+import { useSiteMode, VERSIONS_HOME } from "@/vitrine/siteMode";
 import { SHOP_HELLO, VITRINE_HELLO, whatsAppLink } from "@/vitrine/whatsapp";
 
 export const VitrineBanner = () => (
@@ -21,11 +21,11 @@ export const VitrineBanner = () => (
           WhatsApp
         </a>
         <Link
-          to={SHOP_HOME}
+          to={VERSIONS_HOME}
           className="px-4 py-2 border border-primary/40 text-primary font-display font-bold text-sm rounded-lg inline-flex items-center gap-2 hover:bg-primary/10 transition-colors"
         >
           <ShoppingBag className="w-4 h-4" />
-          Quero comprar no site
+          Loja em manutenção
         </Link>
       </div>
     </div>

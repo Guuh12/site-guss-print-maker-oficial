@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Instagram, Mail, MessageCircle } from "lucide-react";
-import { SHOP_HOME } from "@/vitrine/siteMode";
+import { VERSIONS_HOME } from "@/vitrine/siteMode";
 import { VITRINE_HELLO, WHATSAPP_DISPLAY, whatsAppLink } from "@/vitrine/whatsapp";
 
 const VitrineContactPage = () => (
@@ -53,9 +53,9 @@ const VitrineContactPage = () => (
         </div>
 
         <p className="font-body text-muted-foreground text-center mt-8">
-          Prefere montar o carrinho e pagar pelo site?{" "}
-          <Link to={SHOP_HOME} className="text-primary font-semibold hover:underline">
-            Abrir a loja
+          O site de compras está em manutenção.{" "}
+          <Link to={VERSIONS_HOME} className="text-primary font-semibold hover:underline">
+            Ver as duas versões
           </Link>
         </p>
       </motion.div>

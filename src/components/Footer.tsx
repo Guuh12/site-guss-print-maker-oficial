@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Instagram, Mail, MessageCircle } from "lucide-react";
 import logo from "@/assets/logo-pixel.png";
-import { useSiteMode } from "@/vitrine/siteMode";
+import { useSiteMode, VERSIONS_HOME } from "@/vitrine/siteMode";
 import { whatsAppLink, VITRINE_HELLO } from "@/vitrine/whatsapp";
 
 const Footer = () => {
@@ -11,7 +11,7 @@ const Footer = () => {
     { to: path("/produtos"), label: "Produtos" },
     { to: path("/projeto-personalizado"), label: "Projeto 3D" },
     { to: path("/contato"), label: "Contato" },
-    { to: "/", label: "Trocar versão" },
+    { to: VERSIONS_HOME, label: "Trocar versão" },
   ];
 
   return (
